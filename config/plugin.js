@@ -19,7 +19,7 @@ module.exports = {
   },
 
   mysql: {
-    enable: true,
+    enable: false, // 启用前先备好好 MySQL 数据库
     package: 'egg-mysql',
   },
 };
