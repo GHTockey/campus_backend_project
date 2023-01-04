@@ -13,10 +13,7 @@ class HomeController extends Controller {
     const {ctx} = this;
     console.log(ctx.request.body);
     let res = await ctx.app.mysql.select('users');
-    console.log(res);
-
-
-    ctx.body = 'ok'
+    ctx.body = res;
   };
 }
 
