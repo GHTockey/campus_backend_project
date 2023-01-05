@@ -13,9 +13,9 @@ module.exports = app => {
   router.patch('/api/home/swiper/:id', controller.home.updHomeSwiper); // 通过 ID 修改 home 轮播图数据
   router.get('/api/home/swiper/get/:id', controller.home.getHomeSwiper); // 通过 ID 获取单个轮播图数据
   router.get('/api/home/swiper', controller.home.getHomeSwiperList); // 通过 ID 获取所有轮播图数据
-  router.post('/api/home/article', controller.home.addHomeArticle); // 新增主页文章
-  router.delete('/api/home/article/:id', checkHomeArticleParams(), controller.home.delHomeArticle); // 删除主页文章
+  router.post('/api/home/article', checkHomeArticleParams(),controller.home.addHomeArticle); // 新增主页文章
   router.patch('/api/home/article/:id', checkHomeArticleParams(), controller.home.updHomeArticle); // 修改主页文章
+  router.delete('/api/home/article/:id', controller.home.delHomeArticle); // 删除主页文章
   router.get('/api/home/article/get/:id', controller.home.getHomeArticle); // 获取主页文章
   router.get('/api/home/article', controller.home.getHomeArticleList); // 获取主页文章列表
 };
