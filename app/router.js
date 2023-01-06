@@ -6,7 +6,7 @@
 module.exports = app => {
   const { router, controller } = app;
   const { checkToken, checkHomeArticleParams } = app.middleware; // 解构中间件
-
+  // home
   router.get('/', controller.home.index); // test
   router.post('/api/home/swiper', controller.home.addHomeSwiper); // 添加 home 轮播图
   router.delete('/api/home/swiper/:id', controller.home.delHomeSwiper); // 通过 ID 删除 home 轮播图
@@ -18,4 +18,10 @@ module.exports = app => {
   router.delete('/api/home/article/:id', controller.home.delHomeArticle); // 删除主页文章
   router.get('/api/home/article/get/:id', controller.home.getHomeArticle); // 获取主页文章
   router.get('/api/home/article', controller.home.getHomeArticleList); // 获取主页文章列表
+  // hobby
+  router.post('/api/hobby/swiper',controller.hobby.addHobbySwiper); // 添加 hobby 轮播图
+  router.delete('/api/hobby/swiper/:id',controller.hobby.delHobbySwiper); // 删除 hobby 轮播图
+  router.patch('/api/hobby/swiper/:id',controller.hobby.updHobbySwiper); // 修改 hobby 轮播图
+  router.get('/api/hobby/swiper/get/:id',controller.hobby.getHobbySwiper); // 获取 hobby 轮播图
+  router.get('/api/hobby/swiper',controller.hobby.getHobbySwiperList); // 获取 hobby 轮播图列表
 };
