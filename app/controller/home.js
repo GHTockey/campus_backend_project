@@ -13,19 +13,28 @@ module.exports = class HomeController extends Controller {
     const { ctx } = this;
     try {
       let { id, title, image, cid } = ctx.request.body;
-      if (!!title && !!image && !!cid) {
-        // insert into homeSwiper values(0, "我是标题", "56B04EBA7C016A7A259BC2A76C9412C9CC1168E4_size456_w780_h390", "78946514865");
-        await ctx.app.mysql.insert("homeSwiper", { id: id ? id : '0', title, image, cid });
-        ctx.body = {
-          code: 200,
-          message: "添加成功"
-        }
-      } else {
+      let check = await ctx.app.mysql.select('homeSwiper', { where: { id } });
+      if (check.length) {
         ctx.body = {
           code: 400,
-          message: "参数缺失, 请检查是否传递参数: title/image/cid"
+          message: "ID 重复, 请尝试修改传递的 ID 或者取消传递"
+        }
+      } else {
+        if (!!title && !!image && !!cid) {
+          // insert into homeSwiper values(0, "我是标题", "56B04EBA7C016A7A259BC2A76C9412C9CC1168E4_size456_w780_h390", "78946514865");
+          await ctx.app.mysql.insert("homeSwiper", { id: id ? id : '0', title, image, cid });
+          ctx.body = {
+            code: 200,
+            message: "添加成功"
+          }
+        } else {
+          ctx.body = {
+            code: 400,
+            message: "参数缺失, 请检查是否传递参数: title/image/cid"
+          }
         }
       }
+
     } catch (error) {
       ctx.body = {
         code: 400,

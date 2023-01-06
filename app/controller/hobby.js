@@ -10,7 +10,7 @@ module.exports = class HobbyController extends Controller {
             if (check.length) {
                 ctx.body = {
                     code: 400,
-                    message: "id 重复"
+                    message: "ID 重复, 请尝试修改传递的 ID 或者取消传递"
                 }
             } else {
                 if (!!title && !!image && !!cid) {
