@@ -1,5 +1,5 @@
 // 校验主页文章参数
-module.exports = function checkHomeArticleParams() {
+module.exports = function checkAddArticleParams() {
     return async function (ctx, next) {
         let {
             userID,
