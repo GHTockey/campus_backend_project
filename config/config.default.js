@@ -8,11 +8,12 @@
 module.exports = appInfo => {
   /**
    * built-in config
+   * 读取：ctx.app.config.模块名.键
    * @type {Egg.EggAppConfig}
    **/
   const config = exports = {};
 
-  // 用于cookie签名密钥，应更改为您自己的并保持安全
+  // 用于 cookie 签名密钥, 应更改为您自己的并保持安全
   config.keys = appInfo.name + '_1672667215718_5729';
 
   // 在此处添加中间件配置

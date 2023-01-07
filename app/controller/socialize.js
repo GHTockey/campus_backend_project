@@ -48,8 +48,6 @@ module.exports = class SocializeController extends Controller {
             }
         };
     };
-
-    // 修改文章
     async updSocializeArticle() {
         const { ctx } = this;
         try {
@@ -81,8 +79,6 @@ module.exports = class SocializeController extends Controller {
             }
         };
     };
-
-    // 获取文章
     async getSocializeArticle() {
         const { ctx } = this;
         try {
@@ -115,8 +111,6 @@ module.exports = class SocializeController extends Controller {
             }
         };
     };
-
-    // 获取所有 socialize 轮播图数据
     async getSocializeArticleList() {
         const { ctx } = this;
         try {

@@ -265,24 +265,24 @@ module.exports = class HobbyController extends Controller {
     async getHobbyArticleList() {
         const { ctx } = this;
         try {
-          let res = await ctx.app.mysql.select("hobbyArticle");
-          if (res.length) {
-            ctx.body = {
-              code: 200,
-              message: "获取成功",
-              data: res
-            }
-          } else {
-            ctx.body = {
-              code: 400,
-              message: "没有数据"
-            }
-          };
+            let res = await ctx.app.mysql.select("hobbyArticle");
+            if (res.length) {
+                ctx.body = {
+                    code: 200,
+                    message: "获取成功",
+                    data: res
+                }
+            } else {
+                ctx.body = {
+                    code: 400,
+                    message: "没有数据"
+                }
+            };
         } catch (error) {
-          ctx.body = {
-            code: 400,
-            message: "捕获到错误：" + error
-          }
+            ctx.body = {
+                code: 400,
+                message: "捕获到错误：" + error
+            }
         };
-      };
+    };
 };
