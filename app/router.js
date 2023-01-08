@@ -38,4 +38,6 @@ module.exports = app => {
   // login / register 登录注册
   router.post('/api/LoginOrRegister',controller.login.userLogin); // 登录注册
   router.post('/api/admin/login',controller.login.adminLogin); // 管理员登录
+  // other 其它
+  router.post('/api/search',controller.other.searchArticle); // 模糊搜索文章
 };

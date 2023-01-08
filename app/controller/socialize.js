@@ -85,7 +85,6 @@ module.exports = class SocializeController extends Controller {
             let { id } = ctx.params;
             if (!!id) { // 判断有无 ID
                 let res = await ctx.app.mysql.select('articles', { where: { id, type: 'socialize' } });
-                // console.log(res);
                 if (res.length) {
                     ctx.body = {
                         code: 200,
@@ -114,13 +113,13 @@ module.exports = class SocializeController extends Controller {
     async getSocializeArticleList() {
         const { ctx } = this;
         try {
-            let res = await ctx.app.mysql.select("articles",{where:{type:'socialize'}});
+            let res = await ctx.app.mysql.select("articles", { where: { type: 'socialize' } });
             if (res.length) {
                 ctx.body = {
                     code: 200,
                     message: "获取成功",
                     data: res
-                }
+                };
             } else {
                 ctx.body = {
                     code: 400,
@@ -135,10 +134,3 @@ module.exports = class SocializeController extends Controller {
         };
     };
 };
-
-
-
-
-
-
-
