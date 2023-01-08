@@ -7,41 +7,29 @@ module.exports = class LoginController extends Controller {
     async userLogin() {
         const { ctx } = this;
         try {
+            // 校验参数
             let { username, password } = ctx.request.body;
             if (!Boolean(username && password)) return ctx.body = { code: 400, message: '参数缺失' };
+
             // 检测账号是否已注册
             let checkRegister = await ctx.app.mysql.select('users', { where: { username } });
             if (checkRegister.length) { // 已注册
-                // 校验密码是否正确
-                let checkPwd = await ctx.app.mysql.select('users', {
-                    where: {
-                        username,
-                        password: utils.md5(password)
-                    }
-                })
-                if (checkPwd.length) {
-                    ctx.body = {
-                        code: 200,
-                        message: '登录成功',
-                        // 根据 username + secret 生成 token
-                        token: 'Bearer ' + ctx.app.jwt.sign(
-                            { username },
-                            ctx.app.config.jwt.secret, // token 安全字符串
-                            { expiresIn: '3h' } // token 有效时间
-                        )
-                    };
-                } else {
-                    ctx.body = {
-                        code: 400,
-                        message: '密码或用户名错误'
-                    }
-                }
+                // 校验密码
+                let checkPwd = await ctx.app.mysql.select('users', { where: { username, password: utils.md5(password) } });
+                if (!checkPwd.length) return ctx.body = { code: 400, message: '用户名或密码错误' };
+                ctx.body = {
+                    code: 200,
+                    message: '登录成功',
+                    // 根据 username + secret 生成 token
+                    token: 'Bearer ' + ctx.app.jwt.sign(
+                        { username },
+                        ctx.app.config.jwt.secret, // token 安全字符串
+                        { expiresIn: '3h' } // token 有效时间
+                    )
+                };
             } else { // 未注册
                 // 注册用户
-                await ctx.app.mysql.insert('users', {
-                    username,
-                    password: utils.md5(password)
-                });
+                await ctx.app.mysql.insert('users', { username, password: utils.md5(password) });
                 ctx.body = {
                     code: 200,
                     message: '已将用户注册',
@@ -65,40 +53,26 @@ module.exports = class LoginController extends Controller {
     async adminLogin() {
         const { ctx } = this;
         try {
+            // 校验参数
             let { username, password } = ctx.request.body;
             if (!Boolean(username && password)) return ctx.body = { code: 400, message: '参数缺失' };
-            // 校验是否是管理员
+
+            // 校验管理员权限
             let checkAdmin = await ctx.app.mysql.select('administrators', { where: { username } });
-            if (checkAdmin.length) {
-                // 校验密码
-                let checkPwd = await ctx.app.mysql.select('administrators', {
-                    where: {
-                        username,
-                        password: utils.md5(password)
-                    }
-                });
-                if (checkPwd.length) {
-                    ctx.body = {
-                        code: 200,
-                        message: '登录成功',
-                        token: 'Bearer ' + ctx.app.jwt.sign(
-                            { username },
-                            ctx.app.config.jwt.secret,
-                            { expiresIn: '3h' }
-                        )
-                    }
-                } else {
-                    ctx.body = {
-                        code: 400,
-                        message: '密码或用户名错误'
-                    }
-                }
-            } else {
-                ctx.body = {
-                    code: 400,
-                    message: '你的账号非管理员账号'
-                }
-            }
+            if (!checkAdmin.length) return ctx.body = { code: 400, message: '你的账号非管理员账号' };
+
+            // 校验密码
+            let checkPwd = await ctx.app.mysql.select('administrators', { where: { username, password: utils.md5(password) } });
+            if (!checkPwd.length) return ctx.body = { code: 400, message: '用户名或密码错误' };
+            ctx.body = {
+                code: 200,
+                message: '登录成功',
+                token: 'Bearer ' + ctx.app.jwt.sign(
+                    { username },
+                    ctx.app.config.jwt.secret,
+                    { expiresIn: '3h' }
+                )
+            };
         } catch (error) {
             ctx.body = {
                 code: 400,
