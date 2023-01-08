@@ -173,8 +173,7 @@ module.exports = class HomeController extends Controller {
   async addHomeArticle() {
     const { ctx } = this;
     try {
-      let data = ctx.request.body;
-      await ctx.app.mysql.insert('homeArticle', data);
+      await ctx.app.mysql.insert('articles', { ...ctx.request.body, type: 'home' });
       ctx.body = {
         code: 200,
         message: "添加成功"
@@ -193,9 +192,9 @@ module.exports = class HomeController extends Controller {
     try {
       let { id } = ctx.params;
       if (!!id) { // 判断有无 ID
-        let check = await ctx.app.mysql.select('homeArticle', { where: { id } });
+        let check = await ctx.app.mysql.select('articles', { where: { id, type: 'home' } });
         if (check.length) { // 表中有这个 ID 可以删除   
-          await ctx.app.mysql.delete('homeArticle', { id })
+          await ctx.app.mysql.delete('articles', { id, type: 'home' })
           ctx.body = {
             code: 200,
             message: "删除成功"
@@ -226,9 +225,9 @@ module.exports = class HomeController extends Controller {
     try {
       let { id } = ctx.params;
       if (!!id) {
-        let check = await ctx.app.mysql.select('homeArticle', { where: { id } });
+        let check = await ctx.app.mysql.select('articles', { where: { id, type: 'home' } });
         if (check.length) {
-          await ctx.app.mysql.update('homeArticle', ctx.request.body, { where: { id } });
+          await ctx.app.mysql.update('articles', ctx.request.body, { where: { id, type: 'home' } });
           ctx.body = {
             code: 200,
             message: "修改成功"
@@ -259,7 +258,7 @@ module.exports = class HomeController extends Controller {
     try {
       let { id } = ctx.params;
       if (!!id) { // 判断有无 ID
-        let res = await ctx.app.mysql.select('homeArticle', { where: { id } });
+        let res = await ctx.app.mysql.select('articles', { where: { id, type: 'home' } });
         // console.log(res);
         if (res.length) {
           ctx.body = {
@@ -291,7 +290,7 @@ module.exports = class HomeController extends Controller {
   async getHomeArticleList() {
     const { ctx } = this;
     try {
-      let res = await ctx.app.mysql.select("homeArticle");
+      let res = await ctx.app.mysql.select("articles", { where: { type: 'home' } });
       if (res.length) {
         ctx.body = {
           code: 200,

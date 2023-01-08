@@ -5,7 +5,7 @@ module.exports = class SocializeController extends Controller {
         const { ctx } = this;
         try {
             let data = ctx.request.body;
-            await ctx.app.mysql.insert('socializeArticle', data);
+            await ctx.app.mysql.insert('articles', { ...data, type: 'socialize' });
             ctx.body = {
                 code: 200,
                 message: "添加成功"
@@ -22,9 +22,9 @@ module.exports = class SocializeController extends Controller {
         try {
             let { id } = ctx.params;
             if (!!id) { // 判断有无 ID
-                let check = await ctx.app.mysql.select('socializeArticle', { where: { id } });
+                let check = await ctx.app.mysql.select('articles', { where: { id, type: 'socialize' } });
                 if (check.length) { // 表中有这个 ID 可以删除   
-                    await ctx.app.mysql.delete('socializeArticle', { id })
+                    await ctx.app.mysql.delete('articles', { id, type: 'socialize' })
                     ctx.body = {
                         code: 200,
                         message: "删除成功"
@@ -53,9 +53,9 @@ module.exports = class SocializeController extends Controller {
         try {
             let { id } = ctx.params;
             if (!!id) {
-                let check = await ctx.app.mysql.select('socializeArticle', { where: { id } });
+                let check = await ctx.app.mysql.select('articles', { where: { id, type: 'socialize' } });
                 if (check.length) {
-                    await ctx.app.mysql.update('socializeArticle', ctx.request.body, { where: { id } });
+                    await ctx.app.mysql.update('articles', ctx.request.body, { where: { id, type: 'socialize' } });
                     ctx.body = {
                         code: 200,
                         message: "修改成功"
@@ -84,7 +84,7 @@ module.exports = class SocializeController extends Controller {
         try {
             let { id } = ctx.params;
             if (!!id) { // 判断有无 ID
-                let res = await ctx.app.mysql.select('socializeArticle', { where: { id } });
+                let res = await ctx.app.mysql.select('articles', { where: { id, type: 'socialize' } });
                 // console.log(res);
                 if (res.length) {
                     ctx.body = {
@@ -114,7 +114,7 @@ module.exports = class SocializeController extends Controller {
     async getSocializeArticleList() {
         const { ctx } = this;
         try {
-            let res = await ctx.app.mysql.select("socializeArticle");
+            let res = await ctx.app.mysql.select("articles",{where:{type:'socialize'}});
             if (res.length) {
                 ctx.body = {
                     code: 200,
@@ -135,3 +135,10 @@ module.exports = class SocializeController extends Controller {
         };
     };
 };
+
+
+
+
+
+
+

@@ -101,25 +101,15 @@ module.exports = class HobbyController extends Controller {
         const { ctx } = this;
         try {
             let { id } = ctx.params;
-            if (!!id) { // 判断有无 ID
-                let res = await ctx.app.mysql.query(`SELECT * FROM hobbySwiper WHERE id=${id}`);
-                if (res.length) {
-                    ctx.body = {
-                        code: 200,
-                        message: "获取成功",
-                        data: res
-                    }
-                } else {
-                    ctx.body = {
-                        code: 400,
-                        message: "没有与此 id 相关的数据"
-                    }
-                };
-            } else {
-                ctx.body = {
-                    code: 400,
-                    message: "参数缺失, 请检查是否传递参数: id"
-                }
+            if (!id) return ctx.body = { code: 400, message: "参数缺失, 请检查是否传递参数: id" };
+
+            let res = await ctx.app.mysql.query(`SELECT * FROM hobbySwiper WHERE id=${id}`);
+            if (!res.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };
+
+            ctx.body = {
+                code: 200,
+                message: "获取成功",
+                data: res
             }
         } catch (error) {
             ctx.body = {
@@ -132,18 +122,13 @@ module.exports = class HobbyController extends Controller {
         const { ctx } = this;
         try {
             let res = await ctx.app.mysql.select("hobbySwiper");
-            if (res.length) {
-                ctx.body = {
-                    code: 200,
-                    message: "获取成功",
-                    data: res
-                }
-            } else {
-                ctx.body = {
-                    code: 400,
-                    message: "没有数据"
-                }
-            };
+            if (!res.length) return ctx.body = { code: 400, message: "没有数据" };
+
+            ctx.body = {
+                code: 200,
+                message: "获取成功",
+                data: res
+            }
         } catch (error) {
             ctx.body = {
                 code: 400,
@@ -155,8 +140,7 @@ module.exports = class HobbyController extends Controller {
     async addHobbyArticle() {
         const { ctx } = this;
         try {
-            let data = ctx.request.body;
-            await ctx.app.mysql.insert('hobbyArticle', data);
+            await ctx.app.mysql.insert('articles', { ...ctx.request.body, type: 'hobby' });
             ctx.body = {
                 code: 200,
                 message: "添加成功"
@@ -172,26 +156,12 @@ module.exports = class HobbyController extends Controller {
         const { ctx } = this;
         try {
             let { id } = ctx.params;
-            if (!!id) { // 判断有无 ID
-                let check = await ctx.app.mysql.select('hobbyArticle', { where: { id } });
-                if (check.length) { // 表中有这个 ID 可以删除   
-                    await ctx.app.mysql.delete('hobbyArticle', { id })
-                    ctx.body = {
-                        code: 200,
-                        message: "删除成功"
-                    }
-                } else {
-                    ctx.body = {
-                        code: 400,
-                        message: "没有与此 id 相关的数据"
-                    }
-                };
-            } else {
-                ctx.body = {
-                    code: 400,
-                    message: "参数缺失, 请检查是否传递参数: id"
-                }
-            }
+            if (!id) return ctx.body = { code: 400, message: "参数缺失, 请检查是否传递参数: id" };
+
+            let check = await ctx.app.mysql.select('articles', { where: { id, type: 'hobby' } });
+            if (!check.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };
+            await ctx.app.mysql.delete('articles', { id, type: 'hobby' })
+            ctx.body = { code: 200, message: "删除成功" };
         } catch (error) {
             ctx.body = {
                 code: 400,
@@ -203,26 +173,14 @@ module.exports = class HobbyController extends Controller {
         const { ctx } = this;
         try {
             let { id } = ctx.params;
-            if (!!id) {
-                let check = await ctx.app.mysql.select('hobbyArticle', { where: { id } });
-                if (check.length) {
-                    await ctx.app.mysql.update('hobbyArticle', ctx.request.body, { where: { id } });
-                    ctx.body = {
-                        code: 200,
-                        message: "修改成功"
-                    }
-                } else {
-                    ctx.body = {
-                        code: 400,
-                        message: "没有与此 id 相关的数据"
-                    }
-                };
-            } else {
-                ctx.body = {
-                    code: 400,
-                    message: "参数缺失, 请检查是否传递参数: id"
-                }
-            }
+            if (!id) return ctx.body = { code: 400, message: "参数缺失, 请检查是否传递参数: id" };
+
+            let check = await ctx.app.mysql.select('articles', { where: { id, type: 'hobby' } });
+            if (!check.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };
+
+            await ctx.app.mysql.update('articles', ctx.request.body, { where: { id, type: 'hobby' } });
+            ctx.body = { code: 200, message: "修改成功" };
+
         } catch (error) {
             ctx.body = {
                 code: 400,
@@ -233,28 +191,14 @@ module.exports = class HobbyController extends Controller {
     async getHobbyArticle() {
         const { ctx } = this;
         try {
+            // 判断有无 ID
             let { id } = ctx.params;
-            if (!!id) { // 判断有无 ID
-                let res = await ctx.app.mysql.select('hobbyArticle', { where: { id } });
-                // console.log(res);
-                if (res.length) {
-                    ctx.body = {
-                        code: 200,
-                        message: "获取成功",
-                        data: res
-                    }
-                } else {
-                    ctx.body = {
-                        code: 400,
-                        message: "没有与此 id 相关的数据"
-                    }
-                };
-            } else {
-                ctx.body = {
-                    code: 400,
-                    message: "参数缺失, 请检查是否传递参数: id"
-                }
-            }
+            if (!id) return ctx.body = { code: 400, message: "参数缺失, 请检查是否传递参数: id" };
+
+            // 校验有无数据
+            let res = await ctx.app.mysql.select('articles', { where: { id, type: 'hobby' } });
+            if (!res.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };
+            ctx.body = { code: 200, message: "获取成功", data: res };
         } catch (error) {
             ctx.body = {
                 code: 400,
@@ -265,19 +209,14 @@ module.exports = class HobbyController extends Controller {
     async getHobbyArticleList() {
         const { ctx } = this;
         try {
-            let res = await ctx.app.mysql.select("hobbyArticle");
-            if (res.length) {
-                ctx.body = {
-                    code: 200,
-                    message: "获取成功",
-                    data: res
-                }
-            } else {
-                ctx.body = {
-                    code: 400,
-                    message: "没有数据"
-                }
+            let res = await ctx.app.mysql.select("articles", { where: { type: 'hobby' } });
+            if (!res.length) return ctx.body = { code: 400, message: "没有数据" };
+            ctx.body = {
+                code: 200,
+                message: "获取成功",
+                data: res
             };
+
         } catch (error) {
             ctx.body = {
                 code: 400,
