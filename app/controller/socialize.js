@@ -85,7 +85,7 @@ module.exports = class SocializeController extends Controller {
             let { id } = ctx.params;
             if (!!id) { // 判断有无 ID
                 let res = await ctx.app.mysql.select('articles', { where: { id, type: 'socialize' } });
-                res.forEach(el => el.cover = JSON.parse(el.cover));
+                // res[0].cover && res.forEach(el => el.cover = JSON.parse(el.cover));
                 if (res.length) {
                     ctx.body = {
                         code: 200,
@@ -115,6 +115,7 @@ module.exports = class SocializeController extends Controller {
         const { ctx } = this;
         try {
             let res = await ctx.app.mysql.select("articles", { where: { type: 'socialize' } });
+            res[0].cover && res.forEach(el => el.cover = JSON.parse(el.cover));
             if (res.length) {
                 ctx.body = {
                     code: 200,
