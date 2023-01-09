@@ -197,7 +197,7 @@ module.exports = class HobbyController extends Controller {
 
             // 校验有无数据
             let res = await ctx.app.mysql.select('articles', { where: { id, type: 'hobby' } });
-            res[0].cover && res.forEach(el => el.cover = JSON.parse(el.cover));
+            res.forEach(el => el.cover = JSON.parse(el.cover));
             if (!res.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };
             ctx.body = { code: 200, message: "获取成功", data: res };
         } catch (error) {
@@ -211,7 +211,7 @@ module.exports = class HobbyController extends Controller {
         const { ctx } = this;
         try {
             let res = await ctx.app.mysql.select("articles", { where: { type: 'hobby' } });
-            res[0].cover && res.forEach(el => el.cover = JSON.parse(el.cover));
+            res.forEach(el => el.cover = JSON.parse(el.cover));
             if (!res.length) return ctx.body = { code: 400, message: "没有数据" };
             ctx.body = {
                 code: 200,
