@@ -40,4 +40,6 @@ module.exports = app => {
   router.post('/api/admin/login',controller.login.adminLogin); // 管理员登录
   // other 其它
   router.post('/api/search',controller.other.searchArticle); // 模糊搜索文章
+  // 用户
+  router.resources('user', '/api/user', controller.user);
 };
