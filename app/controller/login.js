@@ -12,11 +12,13 @@ module.exports = class LoginController extends Controller {
             if (!Boolean(username && password)) return ctx.body = { code: 400, message: '参数缺失' };
 
             // 检测账号是否已注册
-            let checkRegister = await ctx.app.mysql.select('users', { where: { username } });
-            if (checkRegister.length) { // 已注册
+            let userInfo = await ctx.app.mysql.select('users', { where: { username } });
+            if (userInfo.length) { // 已注册
                 // 校验密码
                 let checkPwd = await ctx.app.mysql.select('users', { where: { username, password: utils.md5(password) } });
                 if (!checkPwd.length) return ctx.body = { code: 400, message: '用户名或密码错误' };
+                // 删除不必要数据
+                delete userInfo[0].password;
                 ctx.body = {
                     code: 200,
                     message: '登录成功',
@@ -25,20 +27,24 @@ module.exports = class LoginController extends Controller {
                         { username },
                         ctx.app.config.jwt.secret, // token 安全字符串
                         { expiresIn: '3h' } // token 有效时间
-                    )
+                    ),
+                    userInfo: userInfo[0]
                 };
             } else { // 未注册
                 // 注册用户
                 await ctx.app.mysql.insert('users', { username, password: utils.md5(password) });
+                let newUser = await ctx.app.mysql.select('users', { where: { username } });
+                delete newUser[0].password;
                 ctx.body = {
                     code: 200,
                     message: '已将用户注册',
-                    // 根据 username + secret 生成 token
+                    // 根据 username + secret 生成 token 
                     token: 'Bearer ' + ctx.app.jwt.sign(
                         { username },
                         ctx.app.config.jwt.secret, // token 安全字符串
                         { expiresIn: '3h' } // token 有效时间
-                    )
+                    ),
+                    userInfo: newUser[0]
                 };
             };
         } catch (error) {
