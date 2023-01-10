@@ -47,9 +47,12 @@ module.exports = appInfo => {
     }
   };
 
-  // config.multipart = {
-  //   mode: "file"
-  // }
+  config.multipart = {
+    // mode: "stream",
+    // 为了保证文件上传的安全，框架限制了支持的的文件格式
+    // 可以通过 fileExtensions 新增支持的文件扩展名
+    // fileExtensions:['.??']
+  }
 
   // 跨域
   config.cors = {

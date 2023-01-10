@@ -128,7 +128,7 @@ module.exports = class UserController extends Controller {
     };
 };
 /*
-模板
+
 const { ctx } = this;
 try {
 

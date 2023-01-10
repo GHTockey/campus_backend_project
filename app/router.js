@@ -36,16 +36,17 @@ module.exports = app => {
   router.get('/api/socialize/article/get/:id', controller.socialize.getSocializeArticle); // 获取朋友圈文章
   router.get('/api/socialize/article', controller.socialize.getSocializeArticleList); // 获取朋友圈文章列表
   // login / register 登录注册
-  router.post('/api/LoginOrRegister',controller.login.userLogin); // 登录注册
-  router.post('/api/admin/login',controller.login.adminLogin); // 管理员登录
+  router.post('/api/LoginOrRegister', controller.login.userLogin); // 登录注册
+  router.post('/api/admin/login', controller.login.adminLogin); // 管理员登录
   // other 其它
-  router.post('/api/search',controller.other.searchArticle); // 模糊搜索文章
+  router.post('/api/search', controller.other.searchArticle); // 模糊搜索文章
+  router.post('/api/upload', controller.other.fileUpload); // 文件上传
   // 用户
   // router.resources('user', '/api/user', controller.user);
-  router.get('/api/user',controller.user.getUserInfoList); // 获取所有的用户信息
-  router.get('/api/user/:id',controller.user.getUserInfo); // 获取用户信息
-  router.patch('/api/user/pwd/:id',controller.user.updUserPwd); // 修改用户密码
-  router.patch('/api/user/info/:id',controller.user.updUserInfo); // 修改用户信息
-  router.patch('/api/user/:id',controller.user.updUserData); // 修改用户数据
-  router.delete('/api/user/:id',controller.user.delUser); // 删除用户
+  router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息
+  router.get('/api/user/:id', controller.user.getUserInfo); // 获取用户信息
+  router.patch('/api/user/pwd/:id', controller.user.updUserPwd); // 修改用户密码
+  router.patch('/api/user/info/:id', controller.user.updUserInfo); // 修改用户信息
+  router.patch('/api/user/:id', controller.user.updUserData); // 修改用户数据
+  router.delete('/api/user/:id', controller.user.delUser); // 删除用户
 };
