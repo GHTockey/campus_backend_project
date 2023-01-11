@@ -44,9 +44,10 @@ module.exports = class OtherController extends Controller {
                 // 创建文件夹
                 fs.mkdirSync(`app/public/imgs/${type}`)
             };
-
-            // // 创建可写流
-            let ws = fs.createWriteStream(`app/public/imgs/${type}/${fileStream.filename}`);
+            // 生成随机数
+            let randomNum = String(+new Date) + String(Math.random()).slice(-5);
+            // 创建可写流
+            let ws = fs.createWriteStream(`app/public/imgs/${type}/${randomNum + fileStream.filename}`);
             // 写入数据
             try {
                 await awaitWriteStream(fileStream.pipe(ws));
@@ -55,13 +56,13 @@ module.exports = class OtherController extends Controller {
                 await sendToWormhole(fileStream);
                 throw error;
             };
-            let { size } = fs.statSync(`app/public/imgs/${type}/${fileStream.filename}`);
+            let { size } = fs.statSync(`app/public/imgs/${type}/${randomNum + fileStream.filename}`);
             this.ctx.body = {
                 message: '上传完成',
                 code: 200,
                 data: {
                     filename: fileStream.filename,
-                    url: `https://api.tockey.cn/public/imgs/${type}/${fileStream.filename}`,
+                    url: `https://api.tockey.cn/public/imgs/${type}/${randomNum + fileStream.filename}`,
                     size: `${Math.floor(size / 1024 / 1024 * 100) / 100}MB`
                 }
             }
@@ -69,47 +70,4 @@ module.exports = class OtherController extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error };
         };
     };
-
-
-    // async upload() {
-    //     const ctx = this.ctx;
-    //     const parts = ctx.multipart();
-    //     let part;
-    //     // parts() 返回 promise 对象
-    //     while ((part = await parts()) != null) {
-    //         if (part.length) {
-    //             // 这是 busboy 的字段
-    //             console.log('field: ' + part[0]);
-    //             console.log('value: ' + part[1]);
-    //             console.log('valueTruncated: ' + part[2]);
-    //             console.log('fieldnameTruncated: ' + part[3]);
-    //         } else {
-    //             // 这时是用户没有选择文件就点击了上传(part 是 file stream，但是 part.filename 为空)
-    //             if (!part.filename) return ctx.body = { code: 400, message: '没有传入文件' };
-
-    //             // part 是上传的文件流
-    //             console.log('field: ' + part.fieldname);
-    //             console.log('filename: ' + part.filename);
-    //             console.log('encoding: ' + part.encoding);
-    //             console.log('mime: ' + part.mime);
-    //             // 文件处理
-    //             try {
-    //                 console.log('处理文件');
-    //                 // 创建可写流
-    //                 let ws = fs.createWriteStream(`app/public/test/${part.filename}`);
-    //                 // 写入数据
-    //                 const ttt = await toArray(part);
-    //                 const buffer = Buffer.from(ttt);
-    //                 ws.write(buffer)
-    //                 ws.end()
-    //             } catch (err) {
-    //                 // 必须将上传的文件流消费掉，要不然浏览器响应会卡死
-    //                 await sendToWormhole(part);
-    //                 throw err;
-    //             }
-    //         }
-    //     }
-    //     ctx.body = 'ok';
-    //     console.log('我们已经完成了表单的解析!');
-    // }
 };

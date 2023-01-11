@@ -29,6 +29,7 @@ module.exports = app => {
   router.patch('/api/hobby/article/:id', checkAddArticleParams(), controller.hobby.updHobbyArticle); // 修改兴趣圈文章
   router.get('/api/hobby/article/get/:id', controller.hobby.getHobbyArticle); // 获取兴趣圈文章
   router.get('/api/hobby/article', controller.hobby.getHobbyArticleList); // 获取兴趣圈文章列表
+  
   // socialize 朋友圈
   router.post('/api/socialize/article', checkAddArticleParams(), controller.socialize.addSocializeArticle); // 添加朋友圈文章
   router.delete('/api/socialize/article/:id', controller.socialize.delSocializeArticle); // 删除朋友圈文章
@@ -50,3 +51,4 @@ module.exports = app => {
   router.patch('/api/user/:id', controller.user.updUserData); // 修改用户数据
   router.delete('/api/user/:id', controller.user.delUser); // 删除用户
 };
+
