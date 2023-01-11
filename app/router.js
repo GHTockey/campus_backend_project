@@ -29,7 +29,11 @@ module.exports = app => {
   router.patch('/api/hobby/article/:id', checkAddArticleParams(), controller.hobby.updHobbyArticle); // 修改兴趣圈文章
   router.get('/api/hobby/article/get/:id', controller.hobby.getHobbyArticle); // 获取兴趣圈文章
   router.get('/api/hobby/article', controller.hobby.getHobbyArticleList); // 获取兴趣圈文章列表
-  
+  router.post('/api/hobby/cate',controller.hobby.addClassify); // 添加分类
+  router.get('/api/hobby/cate',controller.hobby.getClassifyList); // 获取分类列表
+  router.patch('/api/hobby/cate/:id',controller.hobby.updClassify); // 修改分类
+  router.delete('/api/hobby/cate/:id',controller.hobby.delClassify); // 删除分类
+  router.get('/api/hobby/cate/:id',controller.hobby.getClassify); // 获取分类
   // socialize 朋友圈
   router.post('/api/socialize/article', checkAddArticleParams(), controller.socialize.addSocializeArticle); // 添加朋友圈文章
   router.delete('/api/socialize/article/:id', controller.socialize.delSocializeArticle); // 删除朋友圈文章
