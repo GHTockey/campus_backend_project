@@ -22,7 +22,7 @@ module.exports = class LoginController extends Controller {
                 ctx.body = {
                     code: 200,
                     message: '登录成功',
-                    // 根据 username + secret 生成 token
+                    // 根据 username + secret 签发 token
                     token: 'Bearer ' + ctx.app.jwt.sign(
                         { username },
                         ctx.app.config.jwt.secret, // token 安全字符串
@@ -38,7 +38,7 @@ module.exports = class LoginController extends Controller {
                 ctx.body = {
                     code: 200,
                     message: '已将用户注册',
-                    // 根据 username + secret 生成 token 
+                    // 根据 username + secret 签发 token 
                     token: 'Bearer ' + ctx.app.jwt.sign(
                         { username },
                         ctx.app.config.jwt.secret, // token 安全字符串

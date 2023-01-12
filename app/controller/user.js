@@ -127,15 +127,3 @@ module.exports = class UserController extends Controller {
         };
     };
 };
-/*
-
-const { ctx } = this;
-try {
-
-} catch (error) {
-    ctx.body = { code: 400, message: "捕获到错误：" + error }
-};
-
-ctx.body = { code: 400, message: '参数缺失' };
-
-*/ 

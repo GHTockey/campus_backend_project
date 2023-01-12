@@ -33,6 +33,7 @@ module.exports = class OtherController extends Controller {
             try {
                 var fileStream = await this.ctx.getFileStream();
             } catch (err) {
+                console.log(err);
                 return ctx.body = { code: 400, message: '没有传入文件或者不支持的文件格式' };
 
             };

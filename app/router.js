@@ -7,7 +7,7 @@ module.exports = app => {
   const { router, controller } = app;
   const { checkToken, checkAddArticleParams } = app.middleware; // 解构中间件
   // home 主页
-  router.get('/', controller.home.index); // test
+  router.get('/', checkToken(), controller.home.index); // test
   router.post('/api/home/swiper', controller.home.addHomeSwiper); // 添加 home 轮播图
   router.delete('/api/home/swiper/:id', controller.home.delHomeSwiper); // 删除 home 轮播图
   router.patch('/api/home/swiper/:id', controller.home.updHomeSwiper); // 修改 home 轮播图数据
@@ -29,11 +29,11 @@ module.exports = app => {
   router.patch('/api/hobby/article/:id', checkAddArticleParams(), controller.hobby.updHobbyArticle); // 修改兴趣圈文章
   router.get('/api/hobby/article/get/:id', controller.hobby.getHobbyArticle); // 获取兴趣圈文章
   router.get('/api/hobby/article', controller.hobby.getHobbyArticleList); // 获取兴趣圈文章列表
-  router.post('/api/hobby/cate',controller.hobby.addClassify); // 添加分类
-  router.get('/api/hobby/cate',controller.hobby.getClassifyList); // 获取分类列表
-  router.patch('/api/hobby/cate/:id',controller.hobby.updClassify); // 修改分类
-  router.delete('/api/hobby/cate/:id',controller.hobby.delClassify); // 删除分类
-  router.get('/api/hobby/cate/:id',controller.hobby.getClassify); // 获取分类
+  router.post('/api/hobby/cate', controller.hobby.addClassify); // 添加分类
+  router.get('/api/hobby/cate', controller.hobby.getClassifyList); // 获取分类列表
+  router.patch('/api/hobby/cate/:id', controller.hobby.updClassify); // 修改分类
+  router.delete('/api/hobby/cate/:id', controller.hobby.delClassify); // 删除分类
+  router.get('/api/hobby/cate/:id', controller.hobby.getClassify); // 获取分类
   // socialize 朋友圈
   router.post('/api/socialize/article', checkAddArticleParams(), controller.socialize.addSocializeArticle); // 添加朋友圈文章
   router.delete('/api/socialize/article/:id', controller.socialize.delSocializeArticle); // 删除朋友圈文章
@@ -46,13 +46,24 @@ module.exports = app => {
   // other 其它
   router.post('/api/search', controller.other.searchArticle); // 模糊搜索文章
   router.post('/api/upload', controller.other.fileUpload); // 文件上传
-  // 用户
-  // router.resources('user', '/api/user', controller.user);
+  // users 用户
   router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息
   router.get('/api/user/:id', controller.user.getUserInfo); // 获取用户信息
   router.patch('/api/user/pwd/:id', controller.user.updUserPwd); // 修改用户密码
   router.patch('/api/user/info/:id', controller.user.updUserInfo); // 修改用户信息
   router.patch('/api/user/:id', controller.user.updUserData); // 修改用户数据
-  router.delete('/api/user/:id', controller.user.delUser); // 删除用户
+  router.delete('/api/user/:id', checkToken(true), controller.user.delUser); // 删除用户
 };
+/*
+
+const { ctx } = this;
+try {
+
+} catch (error) {
+    ctx.body = { code: 400, message: "捕获到错误：" + error }
+};
+
+ctx.body = { code: 400, message: '参数缺失' };
+
+*/
 
