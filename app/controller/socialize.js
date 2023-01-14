@@ -1,5 +1,6 @@
 'use strict';
 const { Controller } = require('egg');
+const { strToArr } = require('../utils');
 module.exports = class SocializeController extends Controller {
     async addSocializeArticle() {
         const { ctx } = this;
@@ -85,7 +86,7 @@ module.exports = class SocializeController extends Controller {
             let { id } = ctx.params;
             if (!!id) { // 判断有无 ID
                 let res = await ctx.app.mysql.select('articles', { where: { id, type: 'socialize' } });
-                //  res.forEach(el => el.cover = JSON.parse(el.cover));
+                strToArr(res); // 字符串'[]'转数组
                 if (res.length) {
                     ctx.body = {
                         code: 200,
@@ -115,7 +116,7 @@ module.exports = class SocializeController extends Controller {
         const { ctx } = this;
         try {
             let res = await ctx.app.mysql.select("articles", { where: { type: 'socialize' } });
-            res.forEach(el => el.cover = JSON.parse(el.cover));
+            strToArr(res); // 字符串'[]'转数组
             if (res.length) {
                 ctx.body = {
                     code: 200,

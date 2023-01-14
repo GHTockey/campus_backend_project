@@ -1,6 +1,7 @@
 'use strict';
 const { Controller } = require('egg');
 const utils = require('utility');
+const {strToArr} = require('../utils');
 module.exports = class UserController extends Controller {
     // 获取全部用户信息
     async getUserInfoList() {
@@ -8,15 +9,7 @@ module.exports = class UserController extends Controller {
         try {
             let res = await ctx.app.mysql.select('users');
             res = res.filter(el => delete el.password);
-            res.forEach(el => {
-                for (const key in el) {
-                    if (el[key]) { // 排除 null
-                        if (el[key][0] == '[') { // 筛选 [0] 为字符串 '[' 的字段
-                            el[key] = JSON.parse(el[key])
-                        }
-                    }
-                }
-            });
+            strToArr(res);
             ctx.body = { code: 200, message: '获取成功', data: res };
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
@@ -35,15 +28,7 @@ module.exports = class UserController extends Controller {
             let res = await ctx.app.mysql.select('users', { where: { id } });
             res = res.filter(el => delete el.password);
             if (!res.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };
-            res.forEach(el => {
-                for (const key in el) {
-                    if (el[key]) { // 排除 null
-                        if (el[key][0] == '[') { // 筛选 [0] 为字符串 '[' 的字段
-                            el[key] = JSON.parse(el[key])
-                        }
-                    }
-                }
-            });
+            strToArr(res);
             ctx.body = { code: 200, message: "获取成功", data: res };
 
         } catch (error) {

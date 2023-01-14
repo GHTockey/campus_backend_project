@@ -6,7 +6,7 @@ const path = require('path');
 const awaitWriteStream = require("await-stream-ready").write;
 // 用于关闭管道流
 const sendToWormhole = require("stream-wormhole");
-var toArray = require('stream-to-array');
+const { strToArr } = require('../utils');
 
 module.exports = class OtherController extends Controller {
     async searchArticle() {
@@ -17,8 +17,9 @@ module.exports = class OtherController extends Controller {
         let res = await ctx.app.mysql.query(`
                 SELECT * FROM articles 
                 WHERE name LIKE "%${value}%" 
-                OR title LIKE "%${value}%";`
-        );
+                OR title LIKE "%${value}%";
+        `);
+        strToArr(res); // 字符串'[]'转数组
         ctx.body = {
             code: 200,
             message: '搜索完成',
@@ -69,6 +70,28 @@ module.exports = class OtherController extends Controller {
             }
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error };
+        };
+    };
+
+    // 获取置顶文章
+    async getToppingArticle() {
+        const { ctx } = this;
+        try {
+            // 校验参数
+            let { type } = ctx.query;
+            if (!type) return ctx.body = { code: 400, message: '参数缺失: type' };
+
+            // 校验置顶文章数
+            let articles = await ctx.app.mysql.select('articles', { where: { type, is_topping: 1 } });
+            if (!articles.length) return ctx.body = { code: 400, message: `分类：${type} 下没有置顶文章` };
+            strToArr(articles);
+            ctx.body = {
+                code: 200,
+                message: '获取成功',
+                data: articles
+            };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
 };

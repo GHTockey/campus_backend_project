@@ -1,6 +1,7 @@
 'use strict';
 
 const { Controller } = require('egg');
+const { strToArr } = require('../utils');
 
 module.exports = class HomeController extends Controller {
   async index() {
@@ -259,7 +260,7 @@ module.exports = class HomeController extends Controller {
       let { id } = ctx.params;
       if (!!id) { // 判断有无 ID
         let res = await ctx.app.mysql.select('articles', { where: { id, type: 'home' } });
-        res.forEach(el => el.cover = JSON.parse(el.cover));
+        strToArr(res); // 字符串'[]'转数组
         if (res.length) {
           ctx.body = {
             code: 200,
@@ -291,7 +292,7 @@ module.exports = class HomeController extends Controller {
     const { ctx } = this;
     try {
       let res = await ctx.app.mysql.select("articles", { where: { type: 'home' } });
-      res.forEach(el => el.cover = JSON.parse(el.cover));
+      strToArr(res); // 字符串'[]'转数组
       if (res.length) {
         ctx.body = {
           code: 200,
