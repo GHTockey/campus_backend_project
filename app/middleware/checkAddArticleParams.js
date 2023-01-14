@@ -17,7 +17,8 @@ module.exports = function checkAddArticleParams() {
             is_collection,
             views
         } = ctx.request.body;
-        if (!!userID && !!name && !!avatar && !!title && !!describe && !!content && !!cover && !!date && !!is_concern && !!is_like && !!is_topping && !!is_boutique && !!is_collection && !!views) {
+        console.log(ctx.request.body);
+        if (!!userID && !!name && !!avatar && !!title && !!describe && !!content && !!cover && !!date && !!String(is_concern) && !!String(is_like) && !!String(is_topping) && !!String(is_boutiqu)e && !!String(is_collection) && !!String(views)) {
             await next(); // 校验通过
         } else {
             ctx.body = {
