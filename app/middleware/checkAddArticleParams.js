@@ -5,15 +5,26 @@ module.exports = function checkAddArticleParams() {
         let checkFields = ['userID', 'name', 'avatar', 'title', 'describe', 'content', 'cover', 'date', 'is_concern', 'is_like', 'is_topping', 'is_boutique', 'is_collection', 'views', 'cate'];
         // 缺少的字段
         let lackFields = [];
-        // 遍历必要的字段名
-        checkFields.forEach(item => {
-            // 判断空值
-            if (!(ctx.request.body[item] || ctx.request.body[item] == 0)) return lackFields.push(item);
-        });
-        if (!ctx.request.body.cate) lackFields.push('cate');
-        if (!lackFields.length) return await next(); // 校验通过
 
-        ctx.body = { code: 400, message: `参数缺失: ${lackFields}` }
+        checkFields.forEach(item => {
+            if (typeof ctx.request.body[item] === 'string') {
+                if (!ctx.request.body[item].length) lackFields.push(item)
+            } else if (typeof ctx.request.body[item] === 'undefined') {
+                lackFields.push(item)
+            } else {
+                if (!String(ctx.request.body[item]).length) lackFields.push(item)
+            }
+
+        })
+
+        if (lackFields.length) {
+            ctx.body = { code: 400, message: `参数缺失: ${lackFields}` }
+        } else {
+            await next(); // 校验通过
+            console.log('校验通过', lackFields);
+        }
+
+
 
     }
 };
