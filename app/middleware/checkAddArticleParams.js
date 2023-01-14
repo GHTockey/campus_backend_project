@@ -18,7 +18,7 @@ module.exports = function checkAddArticleParams() {
             views
         } = ctx.request.body;
         console.log(ctx.request.body);
-        if (!!userID && !!name && !!avatar && !!title && !!describe && !!content && !!cover && !!date && !!String(is_concern) && !!String(is_like) && !!String(is_topping) && !!String(is_boutiqu)e && !!String(is_collection) && !!String(views)) {
+        if (!!userID && !!name && !!avatar && !!title && !!describe && !!content && !!cover && !!date && !!String(is_concern) && !!String(is_like) && !!String(is_topping) && !!String(is_boutique) && !!String(is_collection) && !!String(views)) {
             await next(); // 校验通过
         } else {
             ctx.body = {
