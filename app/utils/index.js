@@ -4,7 +4,6 @@ let strToArr = function (data) {
             if (el[key]) { // 排除 null
                 if (el[key][0] == '[') { // 筛选 [0] 为字符串 '[' 的字段
                     el[key] = el[key].replace(/'/g, '"'); 
-                    console.log(el[key]);
                     el[key] = JSON.parse(el[key])
                 }
             }

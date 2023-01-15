@@ -47,6 +47,7 @@ module.exports = app => {
   router.post('/api/search', controller.other.searchArticle); // 模糊搜索文章
   router.post('/api/upload', controller.other.fileUpload); // 文件上传
   router.get('/api/article/topping',controller.other.getToppingArticle); // 获取置顶文章
+  router.post('/test/webhook',controller.other.ttt); // webhook
   // users 用户
   router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息
   router.get('/api/user/:id', controller.user.getUserInfo); // 获取用户信息

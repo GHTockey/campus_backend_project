@@ -6,7 +6,7 @@ const path = require('path');
 const awaitWriteStream = require("await-stream-ready").write;
 // 用于关闭管道流
 const sendToWormhole = require("stream-wormhole");
-const { strToArr } = require('../utils');
+const { strToArr } = require('../utils');;
 
 module.exports = class OtherController extends Controller {
     async searchArticle() {
@@ -95,5 +95,11 @@ module.exports = class OtherController extends Controller {
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
+    };
+
+    // webhook
+    async ttt() {
+        console.log('接收到响应', this.ctx.request.body);
+        this.ctx.body = { "ec": 200, "em": "" }
     };
 };
