@@ -1,4 +1,5 @@
 'use strict';
+const await = require('await-stream-ready/lib/await');
 const { Controller } = require('egg');
 const { strToArr } = require('../utils');
 module.exports = class HobbyController extends Controller {

@@ -30,16 +30,18 @@ module.exports = class OtherController extends Controller {
     // 文件上传
     async fileUpload() {
         const { ctx } = this;
+        let fileStream;
         try {
             try {
-                var fileStream = await this.ctx.getFileStream();
+                fileStream = await this.ctx.getFileStream();
+                console.log(fileStream);
             } catch (err) {
                 console.log(err);
                 return ctx.body = { code: 400, message: '没有传入文件或者不支持的文件格式' };
 
             };
             let { type } = fileStream.fields;
-            type = type ? type : 'other';
+            // type = type ? type : 'other';
 
             // 判断文件夹不存在 
             if (!fs.existsSync(`app/public/imgs/${type}`)) {

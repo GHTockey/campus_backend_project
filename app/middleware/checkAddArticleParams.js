@@ -5,7 +5,6 @@ module.exports = function checkAddArticleParams() {
         let checkFields = ['userID', 'name', 'avatar', 'title', 'describe', 'content', 'cover', 'date', 'is_concern', 'is_like', 'is_topping', 'is_boutique', 'is_collection', 'views', 'cate'];
         // 缺少的字段
         let lackFields = [];
-
         checkFields.forEach(item => {
             if (typeof ctx.request.body[item] === 'string') {
                 if (!ctx.request.body[item].length) lackFields.push(item)
@@ -21,7 +20,7 @@ module.exports = function checkAddArticleParams() {
             ctx.body = { code: 400, message: `参数缺失: ${lackFields}` }
         } else {
             await next(); // 校验通过
-            console.log('校验通过', lackFields);
+            // console.log('校验通过', lackFields);
         }
 
 

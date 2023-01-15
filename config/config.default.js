@@ -16,8 +16,8 @@ module.exports = appInfo => {
   // 用于 cookie 签名密钥, 应更改为您自己的并保持安全
   config.keys = appInfo.name + '_1672667215718_5729';
 
-  // 在此处添加中间件配置
-  config.middleware = [];
+  // 在此处添加全局中间件
+  config.middleware = ['refToStr'];
 
   // 在此处添加用户配置
   const userConfig = {
@@ -48,7 +48,7 @@ module.exports = appInfo => {
   };
 
   config.multipart = {
-    // mode: "stream",
+    mode: "stream",
     // 为了保证文件上传的安全，框架限制了支持的的文件格式
     // 可以通过 fileExtensions 新增支持的文件扩展名
     // fileExtensions:['.??']
