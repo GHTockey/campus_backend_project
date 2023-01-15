@@ -223,6 +223,7 @@ module.exports = class HobbyController extends Controller {
             };
 
         } catch (error) {
+            console.log(error);
             ctx.body = {
                 code: 400,
                 message: "捕获到错误：" + error

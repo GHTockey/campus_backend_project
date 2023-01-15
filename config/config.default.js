@@ -17,7 +17,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1672667215718_5729';
 
   // 在此处添加全局中间件
-  config.middleware = ['refToStr'];
+  // config.middleware = ['refToStr'];
 
   // 在此处添加用户配置
   const userConfig = {
