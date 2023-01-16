@@ -1,14 +1,13 @@
 'use strict';
 const { Controller } = require('egg');
 const utils = require('utility');
-const {strToArr} = require('../utils');
+const { strToArr } = require('../utils');
 module.exports = class UserController extends Controller {
     // 获取全部用户信息
     async getUserInfoList() {
         const { ctx } = this;
         try {
             let res = await ctx.app.mysql.select('users');
-            res = res.filter(el => delete el.password);
             strToArr(res);
             ctx.body = { code: 200, message: '获取成功', data: res };
         } catch (error) {
@@ -26,7 +25,6 @@ module.exports = class UserController extends Controller {
 
             // 校验有无数据
             let res = await ctx.app.mysql.select('users', { where: { id } });
-            res = res.filter(el => delete el.password);
             if (!res.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };
             strToArr(res);
             ctx.body = { code: 200, message: "获取成功", data: res };
@@ -103,6 +101,8 @@ module.exports = class UserController extends Controller {
         try {
             let { id } = ctx.params;
             if (!id) return ctx.body = { code: 400, message: '参数缺失: id' };
+
+            if (id == 1) return ctx.body = { code: 400, message: '无法删除超级管理员' };
 
             let res = await ctx.app.mysql.delete('users', { id });
             if (res.affectedRows == 0) return ctx.body = { code: 400, message: '用户不存在, 请检查 ID' };

@@ -2,6 +2,7 @@
 const { Controller } = require('egg');
 // 实用工具集合包(MD5/SHA1/SHA256/HMAC/解码编码:base64/escape等..)
 const utils = require('utility');
+const { strToArr } = require('../utils');
 module.exports = class LoginController extends Controller {
     // 用户登录注册
     async userLogin() {
@@ -17,8 +18,7 @@ module.exports = class LoginController extends Controller {
                 // 校验密码
                 let checkPwd = await ctx.app.mysql.select('users', { where: { username, password: utils.md5(password) } });
                 if (!checkPwd.length) return ctx.body = { code: 400, message: '用户名或密码错误' };
-                // 删除不必要数据
-                delete userInfo[0].password;
+                strToArr(userInfo);
                 ctx.body = {
                     code: 200,
                     message: '登录成功',
@@ -34,7 +34,7 @@ module.exports = class LoginController extends Controller {
                 // 注册用户
                 await ctx.app.mysql.insert('users', { username, password: utils.md5(password) });
                 let newUser = await ctx.app.mysql.select('users', { where: { username } });
-                delete newUser[0].password;
+                strToArr(newUser); // '[' => [
                 ctx.body = {
                     code: 200,
                     message: '已将用户注册',
@@ -64,12 +64,13 @@ module.exports = class LoginController extends Controller {
             if (!Boolean(username && password)) return ctx.body = { code: 400, message: '参数缺失' };
 
             // 校验管理员权限
-            let checkAdmin = await ctx.app.mysql.select('administrators', { where: { username } });
+            let checkAdmin = await ctx.app.mysql.select('users', { where: { username } });
             if (!checkAdmin.length) return ctx.body = { code: 400, message: '你的账号非管理员账号' };
 
             // 校验密码
-            let checkPwd = await ctx.app.mysql.select('administrators', { where: { username, password: utils.md5(password) } });
-            if (!checkPwd.length) return ctx.body = { code: 400, message: '用户名或密码错误' };
+            let checkPwdRes = await ctx.app.mysql.select('users', { where: { username, password: utils.md5(password) } });
+            if (!checkPwdRes.length) return ctx.body = { code: 400, message: '用户名或密码错误' };
+            strToArr(checkPwdRes);
             ctx.body = {
                 code: 200,
                 message: '登录成功',
@@ -77,7 +78,8 @@ module.exports = class LoginController extends Controller {
                     { username },
                     ctx.app.config.jwt.secret,
                     { expiresIn: '3h' }
-                )
+                ),
+                userInfo: checkPwdRes[0]
             };
         } catch (error) {
             ctx.body = {

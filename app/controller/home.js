@@ -51,8 +51,7 @@ module.exports = class HomeController extends Controller {
       let { id } = ctx.params;
       if (!!id) { // 判断有无 ID
         let check = await ctx.app.mysql.query(`SELECT * FROM homeSwiper WHERE id=${id}`);
-        if (check.length) { // 表中有这个 ID 可以删除
-          // delete from homeSwiper where id="114";        
+        if (check.length) { // 表中有这个 ID 可以删除   
           await ctx.app.mysql.delete('homeSwiper', { id })
           ctx.body = {
             code: 200,
