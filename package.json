@@ -28,7 +28,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-xiaoyuan_backEnd_project",
+    "start": "egg-scripts start --title=egg-server-xiaoyuan_backEnd_project",
     "stop": "egg-scripts stop --title=egg-server-xiaoyuan_backEnd_project",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",

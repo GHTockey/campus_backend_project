@@ -22,7 +22,6 @@ module.exports = class HomeController extends Controller {
         }
       } else {
         if (!!title && !!image && !!cid) {
-          // insert into homeSwiper values(0, "我是标题", "56B04EBA7C016A7A259BC2A76C9412C9CC1168E4_size456_w780_h390", "78946514865");
           await ctx.app.mysql.insert("homeSwiper", { id: id ? id : '0', title, image, cid });
           ctx.body = {
             code: 200,

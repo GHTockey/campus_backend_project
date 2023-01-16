@@ -98,6 +98,6 @@ module.exports = class OtherController extends Controller {
     // webhook
     async ttt() {
         console.log('接收到响应', this.ctx.request.body);
-        this.ctx.body = { "ec": 200, "em": "" }
+        this.ctx.body = { "ec": 200, "em": "" } 
     };
 };

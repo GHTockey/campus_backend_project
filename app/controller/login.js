@@ -69,7 +69,7 @@ module.exports = class LoginController extends Controller {
 
             // 校验密码
             let checkPwdRes = await ctx.app.mysql.select('users', { where: { username, password: utils.md5(password) } });
-            if (!checkPwdRes.length) return ctx.body = { code: 400, message: '用户名或密码错误' };
+            if (!checkPwdRes.length) return ctx.body = { code: 400, message: '密码错误' };
             strToArr(checkPwdRes);
             ctx.body = {
                 code: 200,
