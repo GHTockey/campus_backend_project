@@ -5,39 +5,39 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  const { checkToken, checkAddArticleParams,refToStr } = app.middleware; // 解构中间件
+  const { checkToken, checkAddArticleParams, refToStr } = app.middleware; // 解构中间件
   // home 主页
   router.get('/', checkToken(), controller.home.index); // test
-  router.post('/api/home/swiper', refToStr(),controller.home.addHomeSwiper); // 添加 home 轮播图
+  router.post('/api/home/swiper', refToStr(), controller.home.addHomeSwiper); // 添加 home 轮播图
   router.delete('/api/home/swiper/:id', controller.home.delHomeSwiper); // 删除 home 轮播图
-  router.post('/api/home/swiper/:id', refToStr(),controller.home.updHomeSwiper); // 修改 home 轮播图数据  (小程序不支持发起 patch 请求, 改为 post)
+  router.post('/api/home/swiper/:id', refToStr(), controller.home.updHomeSwiper); // 修改 home 轮播图数据  (小程序不支持发起 patch 请求, 改为 post)
   router.get('/api/home/swiper/get/:id', controller.home.getHomeSwiper); // 获取单个轮播图数据
   router.get('/api/home/swiper', controller.home.getHomeSwiperList); // 获取所有轮播图数据
-  router.post('/api/home/article', checkAddArticleParams(), refToStr(),controller.home.addHomeArticle); // 新增主页文章
-  router.post('/api/home/article/:id', refToStr(),controller.home.updHomeArticle); // 修改主页文章  (小程序不支持发起 patch 请求, 改为 post)
+  router.post('/api/home/article', checkAddArticleParams(), refToStr(), controller.home.addHomeArticle); // 新增主页文章
+  router.post('/api/home/article/:id', refToStr(), controller.home.updHomeArticle); // 修改主页文章  (小程序不支持发起 patch 请求, 改为 post)
   router.delete('/api/home/article/:id', controller.home.delHomeArticle); // 删除主页文章
   router.get('/api/home/article/get/:id', controller.home.getHomeArticle); // 获取主页文章
   router.get('/api/home/article', controller.home.getHomeArticleList); // 获取主页文章列表
   // hobby 兴趣圈
-  router.post('/api/hobby/swiper', refToStr(),controller.hobby.addHobbySwiper); // 添加 hobby 轮播图
+  router.post('/api/hobby/swiper', refToStr(), controller.hobby.addHobbySwiper); // 添加 hobby 轮播图
   router.delete('/api/hobby/swiper/:id', controller.hobby.delHobbySwiper); // 删除 hobby 轮播图
-  router.post('/api/hobby/swiper/:id', refToStr(),controller.hobby.updHobbySwiper); // 修改 hobby 轮播图  (小程序不支持发起 patch 请求, 改为 post)
+  router.post('/api/hobby/swiper/:id', refToStr(), controller.hobby.updHobbySwiper); // 修改 hobby 轮播图  (小程序不支持发起 patch 请求, 改为 post)
   router.get('/api/hobby/swiper/get/:id', controller.hobby.getHobbySwiper); // 获取 hobby 轮播图  置顶
   router.get('/api/hobby/swiper', controller.hobby.getHobbySwiperList); // 获取 hobby 轮播图列表
-  router.post('/api/hobby/article', checkAddArticleParams(),refToStr(), controller.hobby.addHobbyArticle); // 添加兴趣圈文章
+  router.post('/api/hobby/article', checkAddArticleParams(), refToStr(), controller.hobby.addHobbyArticle); // 添加兴趣圈文章
   router.delete('/api/hobby/article/:id', controller.hobby.delHobbyArticle); // 删除兴趣圈文章
-  router.post('/api/hobby/article/:id', refToStr(),controller.hobby.updHobbyArticle); // 修改兴趣圈文章  (小程序不支持发起 patch 请求, 改为 post)
+  router.post('/api/hobby/article/:id', refToStr(), controller.hobby.updHobbyArticle); // 修改兴趣圈文章  (小程序不支持发起 patch 请求, 改为 post)
   router.get('/api/hobby/article/get/:id', controller.hobby.getHobbyArticle); // 获取兴趣圈文章
   router.get('/api/hobby/article', controller.hobby.getHobbyArticleList); // 获取兴趣圈文章列表
-  router.post('/api/hobby/cate',refToStr(), controller.hobby.addClassify); // 添加分类
+  router.post('/api/hobby/cate', refToStr(), controller.hobby.addClassify); // 添加分类
   router.get('/api/hobby/cate', controller.hobby.getClassifyList); // 获取分类列表
-  router.post('/api/hobby/cate/:id', refToStr(),controller.hobby.updClassify); // 修改分类  (小程序不支持发起 patch 请求, 改为 post)
+  router.post('/api/hobby/cate/:id', refToStr(), controller.hobby.updClassify); // 修改分类  (小程序不支持发起 patch 请求, 改为 post)
   router.delete('/api/hobby/cate/:id', controller.hobby.delClassify); // 删除分类
   router.get('/api/hobby/cate/:id', controller.hobby.getClassify); // 获取分类
   // socialize 朋友圈
-  router.post('/api/socialize/article', checkAddArticleParams(),refToStr(), controller.socialize.addSocializeArticle); // 添加朋友圈文章
+  router.post('/api/socialize/article', checkAddArticleParams(), refToStr(), controller.socialize.addSocializeArticle); // 添加朋友圈文章
   router.delete('/api/socialize/article/:id', controller.socialize.delSocializeArticle); // 删除朋友圈文章
-  router.post('/api/socialize/article/:id', refToStr(),controller.socialize.updSocializeArticle); // 修改朋友圈文章  (小程序不支持发起 patch 请求, 改为 post)
+  router.post('/api/socialize/article/:id', refToStr(), controller.socialize.updSocializeArticle); // 修改朋友圈文章  (小程序不支持发起 patch 请求, 改为 post)
   router.get('/api/socialize/article/get/:id', controller.socialize.getSocializeArticle); // 获取朋友圈文章
   router.get('/api/socialize/article', controller.socialize.getSocializeArticleList); // 获取朋友圈文章列表
   // login / register 登录注册
@@ -46,14 +46,14 @@ module.exports = app => {
   // other 其它
   router.post('/api/search', controller.other.searchArticle); // 模糊搜索文章
   router.post('/api/upload', controller.other.fileUpload); // 文件上传
-  router.get('/api/article/topping',controller.other.getToppingArticle); // 获取置顶文章
-  router.post('/test/webhook',controller.other.ttt); // webhook
+  router.get('/api/article/topping', controller.other.getToppingArticle); // 获取置顶文章
+  router.post('/test/webhook', controller.other.ttt); // webhook
   // users 用户
   router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息
   router.get('/api/user/:id', controller.user.getUserInfo); // 获取用户信息
   router.post('/api/user/pwd/:id', controller.user.updUserPwd); // 修改用户密码  (小程序不支持发起 patch 请求, 改为 post)
-  router.post('/api/user/info/:id', controller.user.updUserInfo); // 修改用户信息  (小程序不支持发起 patch 请求, 改为 post)
-  router.post('/api/user/:id', controller.user.updUserData); // 修改用户数据  (小程序不支持发起 patch 请求, 改为 post)
+  router.post('/api/user/info/:id', refToStr(), controller.user.updUserInfo); // 修改用户信息  (小程序不支持发起 patch 请求, 改为 post)
+  router.post('/api/user/:id', refToStr(), controller.user.updUserData); // 修改用户数据  (小程序不支持发起 patch 请求, 改为 post)
   router.delete('/api/user/:id', checkToken(true), controller.user.delUser); // 删除用户
 };
 /*

@@ -1,6 +1,5 @@
 // 字符串数组转真数组
 let strToArr = (data) => {
-    console.log(this);
     data.forEach(el => {
         for (const key in el) {
             if (key == 'password') delete el.password; // 删除 pwd 字段
