@@ -16,17 +16,11 @@ module.exports = class HobbyController extends Controller {
                     message: "ID 重复, 请尝试修改传递的 ID 或者取消传递"
                 }
             } else {
-                if (!!title && !!image && !!cid) {
-                    await ctx.app.mysql.insert("hobbySwiper", { id: id ? id : '0', title, image, cid });
-                    ctx.body = {
-                        code: 200,
-                        message: "添加成功"
-                    }
-                } else {
-                    ctx.body = {
-                        code: 400,
-                        message: "参数缺失, 请检查是否传递参数: title/image/cid"
-                    }
+
+                await ctx.app.mysql.insert("hobbySwiper", { id: id ? id : '0', title, image, cid });
+                ctx.body = {
+                    code: 200,
+                    message: "添加成功"
                 }
             }
 
@@ -73,10 +67,10 @@ module.exports = class HobbyController extends Controller {
         try {
             let { id } = ctx.params;
             let { title, image, cid } = ctx.request.body;
-            if (!!id && !!title && !!image) { // 判断有无 ID
+            if (!!id) { // 判断有无 ID
                 let check = await ctx.app.mysql.query(`SELECT * FROM hobbySwiper WHERE id=${id}`);
                 if (check.length) { // 表中有这个 ID 可以修改
-                    await ctx.app.mysql.query(`update hobbySwiper set title="${title}", image="${image}", cid="${cid}" where id="${id}"`)
+                    await ctx.app.mysql.update('hobbySwiper', ctx.request.body, { where: { id } });
                     ctx.body = {
                         code: 200,
                         message: "修改成功"
@@ -90,7 +84,7 @@ module.exports = class HobbyController extends Controller {
             } else {
                 ctx.body = {
                     code: 400,
-                    message: "参数缺失, 请检查是否传递参数: id/title/image"
+                    message: "参数缺失: id"
                 }
             }
         } catch (error) {
@@ -234,11 +228,8 @@ module.exports = class HobbyController extends Controller {
     async addClassify() {
         const { ctx } = this;
         try {
-            // 校验参数
-            let { title, icon, url, color } = ctx.request.body;
-            if (!(title && icon && url && color)) return ctx.body = { code: 400, message: '参数缺失' };
-
             // 校验重名
+            let { title } = ctx.request.body;
             let item = await ctx.app.mysql.select('classify', { where: { title } });
             if (item.length) return ctx.body = { code: 400, message: '已有相同名称的项目' };
 
@@ -262,7 +253,7 @@ module.exports = class HobbyController extends Controller {
         try {
             // 校验 ID
             let { id } = ctx.params;
-            if (!id) return ctx.body = { code: 400, message: '参数缺失' };
+            if (!id) return ctx.body = { code: 400, message: '参数缺失: id' };
 
             // 校验分类是否存在
             let item = await ctx.app.mysql.select('classify', { where: { id } });

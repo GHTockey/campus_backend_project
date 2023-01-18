@@ -1,14 +1,10 @@
 'use strict';
 
+const await = require('await-stream-ready/lib/await');
 const { Controller } = require('egg');
 const { strToArr } = require('../utils');
 
 module.exports = class HomeController extends Controller {
-  async index() {
-    const { ctx } = this;
-    ctx.body = 'eggjs 服务已启动';
-  };
-
   // 添加 home 轮播图
   async addHomeSwiper() {
     const { ctx } = this;
@@ -21,17 +17,10 @@ module.exports = class HomeController extends Controller {
           message: "ID 重复, 请尝试修改传递的 ID 或者取消传递"
         }
       } else {
-        if (!!title && !!image && !!cid) {
-          await ctx.app.mysql.insert("homeSwiper", { id: id ? id : '0', title, image, cid });
-          ctx.body = {
-            code: 200,
-            message: "添加成功"
-          }
-        } else {
-          ctx.body = {
-            code: 400,
-            message: "参数缺失, 请检查是否传递参数: title/image/cid"
-          }
+        await ctx.app.mysql.insert("homeSwiper", { id: id ? id : '0', title, image, cid });
+        ctx.body = {
+          code: 200,
+          message: "添加成功"
         }
       }
 
@@ -82,10 +71,10 @@ module.exports = class HomeController extends Controller {
     try {
       let { id } = ctx.params;
       let { title, image, cid } = ctx.request.body;
-      if (!!id && !!title && !!image) { // 判断有无 ID
+      if (!!id) { // 判断有无 ID
         let check = await ctx.app.mysql.query(`SELECT * FROM homeSwiper WHERE id=${id}`);
         if (check.length) { // 表中有这个 ID 可以修改
-          await ctx.app.mysql.query(`update homeSwiper set title="${title}", image="${image}", cid="${cid}" where id="${id}"`)
+          await ctx.app.mysql.update('homeSwiper', ctx.request.body, { where: { id } });
           ctx.body = {
             code: 200,
             message: "修改成功"
@@ -96,11 +85,6 @@ module.exports = class HomeController extends Controller {
             message: "没有与此 id 相关的数据"
           }
         };
-      } else {
-        ctx.body = {
-          code: 400,
-          message: "参数缺失, 请检查是否传递参数: id/title/image"
-        }
       }
     } catch (error) {
       ctx.body = {
@@ -172,6 +156,7 @@ module.exports = class HomeController extends Controller {
   async addHomeArticle() {
     const { ctx } = this;
     try {
+      console.log(ctx.request.body);
       await ctx.app.mysql.insert('articles', { ...ctx.request.body, type: 'home' });
       ctx.body = {
         code: 200,

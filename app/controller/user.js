@@ -1,7 +1,8 @@
 'use strict';
+const await = require('await-stream-ready/lib/await');
 const { Controller } = require('egg');
 const utils = require('utility');
-const { strToArr } = require('../utils');
+const { strToArr, checkFields } = require('../utils');
 module.exports = class UserController extends Controller {
     // 获取全部用户信息
     async getUserInfoList() {
@@ -66,7 +67,6 @@ module.exports = class UserController extends Controller {
     async updUserInfo() {
         const { ctx } = this;
         try {
-
             let { id } = ctx.params;
             if (!id) return ctx.body = { code: 400, message: '参数缺失: id' };
 
@@ -111,4 +111,31 @@ module.exports = class UserController extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
+
+    // 添加实名信息
+    async addCertified() {
+        const { ctx } = this;
+        try {
+            let { id } = ctx.params;
+            await ctx.app.mysql.update('users', { is_realname: 1, certified: JSON.stringify(ctx.request.body) }, { where: { id } });
+            ctx.body = { code: 200, message: '添加成功' }
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
+    // 获取实名信息列表
+    async getCertifiedList() {
+        const { ctx } = this;
+        try {
+            let data = await ctx.app.mysql.select('users', { where: { is_realname: 1 } });
+            strToArr(data);
+            ctx.body = {
+                code: 200,
+                message: '获取成功',
+                data: data
+            }
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    }
 };
