@@ -1,6 +1,6 @@
 'use strict';
 
-// 必要字段
+// 【必要字段】
 // 添加轮播图
 let swiperNeedFields = ['title', 'image', 'cid'];
 // 添加文章
