@@ -67,7 +67,7 @@ module.exports = app => {
   router.delete('/api/user/:id', checkToken(true), controller.user.delUser); // 删除用户
   router.post('/api/certified/:id', checkFieldsTRAstr(certifiedNeedFields), controller.user.addCertified); // 添加用户实名信息
   router.get('/api/certified', controller.user.getCertifiedList); // 获取所有已实名用户
-  // 支付系统
+  // 支付系统123
   router.post('/api/pay/create', checkFieldsTRAstr(['username', 'price']), controller.pay.createOrder); // 创建订单
 };
 /*
