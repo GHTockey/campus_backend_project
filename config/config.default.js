@@ -39,10 +39,10 @@ module.exports = appInfo => {
   // mysql 配置
   config.mysql = {
     client: {
-      host: '127.0.0.1',
+      host: '1.15.48.103',
       port: '3306',
-      user: 'root',
-      password: 'eb021e1242ab27eb',
+      user: 'campus',
+      password: 'EYCsxBY4CZTXJGMd',
       database: 'campus',
     }
   };
