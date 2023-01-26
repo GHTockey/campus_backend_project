@@ -94,10 +94,4 @@ module.exports = class OtherController extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
-
-    // webhook
-    async ttt() {
-        console.log('接收到交易响应', this.ctx.request.body);
-        this.ctx.body = { "ec": 200, "em": "" } 
-    };
 };

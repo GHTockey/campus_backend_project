@@ -117,6 +117,12 @@ module.exports = class UserController extends Controller {
         const { ctx } = this;
         try {
             let { id } = ctx.params;
+            // 通过 ID 获取用户名并在 user_wallet 表新增这个用户
+            let person = await ctx.app.mysql.select('users', { where: { id } });
+            person = person[0]
+            await ctx.app.mysql.insert('user_wallet', { user_id: id, username: person.username });
+
+            // 添加实名数据
             await ctx.app.mysql.update('users', { is_realname: 1, certified: JSON.stringify(ctx.request.body) }, { where: { id } });
             ctx.body = { code: 200, message: '添加成功' }
         } catch (error) {
