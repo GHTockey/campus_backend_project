@@ -10,14 +10,14 @@ module.exports = class HomeController extends Controller {
     const { ctx } = this;
     try {
       let { id, title, image, cid } = ctx.request.body;
-      let check = await ctx.app.mysql.select('homeSwiper', { where: { id } });
+      let check = await ctx.app.mysql.select('swipers', { where: { id, type: 'home' } });
       if (check.length) {
         ctx.body = {
           code: 400,
           message: "ID 重复, 请尝试修改传递的 ID 或者取消传递"
         }
       } else {
-        await ctx.app.mysql.insert("homeSwiper", { id: id ? id : '0', title, image, cid });
+        await ctx.app.mysql.insert("swipers", { id: id ? id : '0', title, image, cid, type: 'home' });
         ctx.body = {
           code: 200,
           message: "添加成功"
@@ -32,15 +32,15 @@ module.exports = class HomeController extends Controller {
     };
   };
 
-  // 通过 ID 删除 home 轮播图
+  // 通过 ID 删除轮播图
   async delHomeSwiper() {
     const { ctx } = this;
     try {
       let { id } = ctx.params;
       if (!!id) { // 判断有无 ID
-        let check = await ctx.app.mysql.query(`SELECT * FROM homeSwiper WHERE id=${id}`);
+        let check = await ctx.app.mysql.query(`SELECT * FROM swipers WHERE id=${id}`);
         if (check.length) { // 表中有这个 ID 可以删除   
-          await ctx.app.mysql.delete('homeSwiper', { id })
+          await ctx.app.mysql.delete('swipers', { id })
           ctx.body = {
             code: 200,
             message: "删除成功"
@@ -65,16 +65,16 @@ module.exports = class HomeController extends Controller {
     };
   };
 
-  // 通过 ID 修改 home 轮播图数据
+  // 通过 ID 修改轮播图数据
   async updHomeSwiper() {
     const { ctx } = this;
     try {
       let { id } = ctx.params;
       let { title, image, cid } = ctx.request.body;
       if (!!id) { // 判断有无 ID
-        let check = await ctx.app.mysql.query(`SELECT * FROM homeSwiper WHERE id=${id}`);
+        let check = await ctx.app.mysql.query(`SELECT * FROM swipers WHERE id=${id}`);
         if (check.length) { // 表中有这个 ID 可以修改
-          await ctx.app.mysql.update('homeSwiper', ctx.request.body, { where: { id } });
+          await ctx.app.mysql.update('swipers', ctx.request.body, { where: { id } });
           ctx.body = {
             code: 200,
             message: "修改成功"
@@ -94,13 +94,13 @@ module.exports = class HomeController extends Controller {
     };
   };
 
-  // 通过 ID 获取 home 轮播图数据
+  // 通过 ID 获取轮播图数据
   async getHomeSwiper() {
     const { ctx } = this;
     try {
       let { id } = ctx.params;
       if (!!id) { // 判断有无 ID
-        let res = await ctx.app.mysql.query(`SELECT * FROM homeSwiper WHERE id=${id}`);
+        let res = await ctx.app.mysql.query(`SELECT * FROM swipers WHERE id=${id}`);
         if (res.length) {
           ctx.body = {
             code: 200,
@@ -131,7 +131,7 @@ module.exports = class HomeController extends Controller {
   async getHomeSwiperList() {
     const { ctx } = this;
     try {
-      let res = await ctx.app.mysql.select("homeSwiper");
+      let res = await ctx.app.mysql.select("swipers",{where:{type:'home'}});
       if (res.length) {
         ctx.body = {
           code: 200,

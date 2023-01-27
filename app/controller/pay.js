@@ -56,7 +56,7 @@ module.exports = class Pay extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
-    // 查询订单列表
+    // 查询订单列表 
     async getOrderList() {
         const { ctx } = this;
         try {
@@ -104,7 +104,6 @@ module.exports = class Pay extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
-
     // 获取余额
     async getBalance() {
         const { ctx } = this;
@@ -117,5 +116,5 @@ module.exports = class Pay extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
 
-    }
+    };
 }

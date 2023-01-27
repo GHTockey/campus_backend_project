@@ -9,7 +9,7 @@ module.exports = class HobbyController extends Controller {
         try {
             let { id, title, image, cid } = ctx.request.body;
 
-            let check = await ctx.app.mysql.select('hobbySwiper', { where: { id } });
+            let check = await ctx.app.mysql.select('swipers', { where: { id } });
             if (check.length) {
                 ctx.body = {
                     code: 400,
@@ -17,7 +17,7 @@ module.exports = class HobbyController extends Controller {
                 }
             } else {
 
-                await ctx.app.mysql.insert("hobbySwiper", { id: id ? id : '0', title, image, cid });
+                await ctx.app.mysql.insert("swipers", { id: id ? id : '0', title, image, cid, type: 'hobby' });
                 ctx.body = {
                     code: 200,
                     message: "添加成功"
@@ -36,9 +36,9 @@ module.exports = class HobbyController extends Controller {
         try {
             let { id } = ctx.params;
             if (!!id) { // 判断有无 ID
-                let check = await ctx.app.mysql.query(`SELECT * FROM hobbySwiper WHERE id=${id}`);
+                let check = await ctx.app.mysql.query(`SELECT * FROM swipers WHERE id=${id}`);
                 if (check.length) { // 表中有这个 ID 可以删除
-                    await ctx.app.mysql.delete('hobbySwiper', { id })
+                    await ctx.app.mysql.delete('swipers', { id })
                     ctx.body = {
                         code: 200,
                         message: "删除成功"
@@ -68,9 +68,9 @@ module.exports = class HobbyController extends Controller {
             let { id } = ctx.params;
             let { title, image, cid } = ctx.request.body;
             if (!!id) { // 判断有无 ID
-                let check = await ctx.app.mysql.query(`SELECT * FROM hobbySwiper WHERE id=${id}`);
+                let check = await ctx.app.mysql.query(`SELECT * FROM swipers WHERE id=${id}`);
                 if (check.length) { // 表中有这个 ID 可以修改
-                    await ctx.app.mysql.update('hobbySwiper', ctx.request.body, { where: { id } });
+                    await ctx.app.mysql.update('swipers', ctx.request.body, { where: { id } });
                     ctx.body = {
                         code: 200,
                         message: "修改成功"
@@ -100,7 +100,7 @@ module.exports = class HobbyController extends Controller {
             let { id } = ctx.params;
             if (!id) return ctx.body = { code: 400, message: "参数缺失, 请检查是否传递参数: id" };
 
-            let res = await ctx.app.mysql.query(`SELECT * FROM hobbySwiper WHERE id=${id}`);
+            let res = await ctx.app.mysql.query(`SELECT * FROM swipers WHERE id=${id}`);
             if (!res.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };
 
             ctx.body = {
@@ -118,7 +118,7 @@ module.exports = class HobbyController extends Controller {
     async getHobbySwiperList() {
         const { ctx } = this;
         try {
-            let res = await ctx.app.mysql.select("hobbySwiper");
+            let res = await ctx.app.mysql.select("swipers", { where: { type: 'hobby' } });
             if (!res.length) return ctx.body = { code: 400, message: "没有数据" };
 
             ctx.body = {
@@ -305,3 +305,6 @@ module.exports = class HobbyController extends Controller {
         };
     }
 };
+
+
+
