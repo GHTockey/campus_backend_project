@@ -10,7 +10,7 @@ module.exports = {
   // 跨域包
   cors: {
     enable: true,
-    package: "egg-core"
+    package: "egg-cors"
   },
 
   jwt: {

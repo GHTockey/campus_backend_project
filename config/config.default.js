@@ -28,7 +28,13 @@ module.exports = appInfo => {
   config.security = {
     csrf: {
       enable: false,
-    }
+    },
+  };
+  // 跨域
+  config.cors = {
+    origin: '*', // 允许跨域访问，或者白名单
+    credentials: true, // 允许跨域携带cookie
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
   };
 
   // token 安全字符串
@@ -47,27 +53,21 @@ module.exports = appInfo => {
     }
   };
 
-  config.multipart = {
-    mode: "stream",
+  // config.multipart = {
+    // mode: "stream",
     // 为了保证文件上传的安全，框架限制了支持的的文件格式
     // 可以通过 fileExtensions 新增支持的文件扩展名
     // fileExtensions:['.??']
-  }
+  // };
 
-  // 跨域
-  config.cors = {
-    origin: '*', // 允许所以跨域访问，或者白名单
-    credentials: true, // 允许跨域携带cookie
-    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
-  };
 
   //  端口
   config.cluster = {
     listen: {
       // path: '',
-      port: 7001
+      port: 7002
     }
-  }
+  };
 
   return {
     ...config,
