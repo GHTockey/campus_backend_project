@@ -66,7 +66,7 @@ module.exports = appInfo => {
     listen: {
       // path: '',
       port: 7001
-    }
+    } 
   };
 
   return {
