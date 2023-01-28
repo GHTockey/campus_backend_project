@@ -67,7 +67,7 @@ module.exports = appInfo => {
       // path: '',
       port: 7001
     }
-  };
+  }; 
 
   return {
     ...config,
