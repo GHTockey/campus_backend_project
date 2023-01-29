@@ -24,15 +24,16 @@ module.exports = class Pay extends Controller {
 
             // 分配充值通道
             let passages = await ctx.app.mysql.select('pay_codes', { where: { stage: stage, state: 0 } });
-            let time = +new Date(); // 当前时间
-            let expiration_time = new Date(time + 120000); // 过期时间
-            // pay_codes 设为占用状态
-            await ctx.app.mysql.update('pay_codes', { state: 1, expiration_time, date: new Date(time) }, {
+            let time = +new Date(); // 生成创建时间
+            let expiration_time = new Date(time + 120000); // 生成过期时间
+            let order_id = String(time) + String(Math.random()).slice(-5); // 生成订单号
+            // pay_codes 设为占用状态并写入订单ID
+            await ctx.app.mysql.update('pay_codes', { state: 1, expiration_time, date: new Date(time), order_id }, {
                 where: { stage: passages[0].stage, really_price: passages[0].really_price }
             });
 
             let uOrder = {
-                order_id: String(time) + String(Math.random()).slice(-5), // 订单号
+                order_id, // 订单号
                 price,
                 username,
                 remarks: '账号充值',
@@ -77,7 +78,8 @@ module.exports = class Pay extends Controller {
             if (!order_id) return ctx.body = { code: 400, message: '参数缺失：order_id' };
             let order = await ctx.app.mysql.select('user_orders', { where: { order_id } });
             if (!order.length) return ctx.body = { code: 400, message: '没有此单号的数据' };
-            ctx.body = { code: 200, message: '获取成功', order: order[0] };
+            let payee_code = await ctx.app.mysql.query('SELECT payee_code FROM pay_codes WHERE order_id = ?', order_id);
+            ctx.body = { code: 200, message: '获取成功', order: {...order[0], payee_code: payee_code[0].payee_code} };
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
