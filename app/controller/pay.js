@@ -9,6 +9,7 @@ module.exports = class Pay extends Controller {
         try {
             let stage; // 存放充值档位
             let { username, price } = ctx.request.body;
+            if (price == 0.01) stage = 'test';
             if (price == 10) stage = 'ten';
             if (price == 30) stage = 'thirty';
             if (price == 50) stage = 'fifty';
@@ -91,10 +92,10 @@ module.exports = class Pay extends Controller {
         // 订单状态：-1  |  订单过期 0   |   等待支付 1   |   完成  2
         try {
             let { money, time, type, title, deviceid, content } = ctx.request.body;
-            money = money == 'null' ? money : content.match(/(\d+\.\d+|\d+)(?=元)/)[1]
-            money = Number(money) + 10
+            money = money == 'null' ? content.match(/(\d+\.\d+|\d+)(?=元)/)[1] : money;
+            console.log(money);
+            money = Number(money) + 100
             // console.log(content.match(/(\d+\.\d+|\d+)(?=元)/)[1]);
-            // console.log(money);
             // 根据金额+浮点数筛选出充值的用户
             let person = await ctx.app.mysql.select('user_orders', { where: { really_price: money, state: 1 } });
             if (!person.length) return ctx.body = { code: 400, message: '当前没有订单' };
