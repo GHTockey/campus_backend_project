@@ -70,7 +70,7 @@ module.exports = app => {
   router.post('/api/pay/create', checkFieldsTRAstr(['username', 'price']), controller.pay.createOrder); // 创建订单
   router.get('/api/pay/orders/:username', controller.pay.getOrderList); // 获取订单列表
   router.get('/api/pay/order/:order_id', controller.pay.getOrderDetail); // 获取订单详情
-  router.post('/api/pay/res', controller.pay.payResponse); // 接收支付响应
+  router.post('/api/pay/res', controller.pay.payResponse); // 接收支付响应 
   router.get('/api/pay/balance/:user_id', controller.pay.getBalance); // 获取用户余额
 };
 /*

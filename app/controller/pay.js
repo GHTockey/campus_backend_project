@@ -79,7 +79,7 @@ module.exports = class Pay extends Controller {
             let order = await ctx.app.mysql.select('user_orders', { where: { order_id } });
             if (!order.length) return ctx.body = { code: 400, message: '没有此单号的数据' };
             let payee_code = await ctx.app.mysql.query('SELECT payee_code FROM pay_codes WHERE order_id = ?', order_id);
-            ctx.body = { code: 200, message: '获取成功', order: {...order[0], payee_code: payee_code[0].payee_code} };
+            ctx.body = { code: 200, message: '获取成功', order: { ...order[0], payee_code: payee_code[0]?.payee_code } };
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
@@ -87,22 +87,31 @@ module.exports = class Pay extends Controller {
     // 支付响应
     async payResponse() {
         const { ctx } = this;
+        console.log(ctx.request.body);
         // 订单状态：-1  |  订单过期 0   |   等待支付 1   |   完成  2
         try {
             let { money, time, type, title, deviceid, content } = ctx.request.body;
+            money = money == 'null' ? money : content.match(/(\d+\.\d+|\d+)(?=元)/)[1]
             money = Number(money) + 10
-            console.log(money);
+            // console.log(content.match(/(\d+\.\d+|\d+)(?=元)/)[1]);
+            // console.log(money);
             // 根据金额+浮点数筛选出充值的用户
             let person = await ctx.app.mysql.select('user_orders', { where: { really_price: money, state: 1 } });
-            person = person[0];
+            if (!person.length) return ctx.body = { code: 400, message: '当前没有订单' };
 
-            let pay_time = new Date(); // 完成支付时间
+            person = person[0];
+            let { username, order_id, really_price, remarks } = person;
+            let pay_time = new Date(time); // 完成支付时间
+
             // 将用户订单更新为成功状态
-            await ctx.app.mysql.update('user_orders', { state: 2, pay_time })
+            await ctx.app.mysql.update('user_orders', { state: 2, remarks, pay_time }, { where: { really_price: money, state: 1 } });
+            // 释放支付通道
+            await ctx.app.mysql.update('pay_codes', { state: 0, expiration_time: null, date: null, order_id: null }, { where: { really_price, state: 1, order_id } });
 
             console.log(`${pay_time} 用户 ${person.username} 充值 ${person.really_price} 成功 `);
-            ctx.body = 'ok';
+            ctx.body = { code: 200, message: '充值完成' };
         } catch (error) {
+            // console.log(error);
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
