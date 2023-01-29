@@ -101,6 +101,7 @@ module.exports = class Pay extends Controller {
             if (!person.length) return ctx.body = { code: 400, message: '当前没有订单' };
 
             person = person[0];
+            console.log(person);
             let { username, order_id, really_price, remarks } = person;
             let pay_time = new Date(time); // 完成支付时间
 
@@ -108,6 +109,9 @@ module.exports = class Pay extends Controller {
             await ctx.app.mysql.update('user_orders', { state: 2, remarks, pay_time }, { where: { really_price: money, state: 1 } });
             // 释放支付通道
             await ctx.app.mysql.update('pay_codes', { state: 0, expiration_time: null, date: null, order_id: null }, { where: { really_price, state: 1, order_id } });
+            // 余额增加
+            let yue = await ctx.app.mysql.select('user_wallet', { where: { username } });
+            await ctx.app.mysql.update('user_wallet', { money: yue[0].money + money }, { where: { username } });
 
             console.log(`${pay_time} 用户 ${person.username} 充值 ${person.really_price} 成功 `);
             ctx.body = { code: 200, message: '充值完成' };
