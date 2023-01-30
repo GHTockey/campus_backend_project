@@ -68,7 +68,7 @@ module.exports = class Pay extends Controller {
             let { username } = ctx.params;
             if (!username) return ctx.body = { code: 400, message: '参数缺失：username' };
             // let orderList = await ctx.app.mysql.select('user_orders', { where: { username } });
-            let orderList = await ctx.app.mysql.query(`SELECT order_id,price,remarks,state,date FROM user_orders`);
+            let orderList = await ctx.app.mysql.query(`SELECT order_id,price,remarks,state,date FROM user_orders where username = ?`, username);
             ctx.body = { code: 200, message: '获取成功', orderList };
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
