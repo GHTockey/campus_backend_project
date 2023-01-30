@@ -15,6 +15,9 @@ module.exports = class Pay extends Controller {
             if (price == 50) stage = 'fifty';
             if (!stage) return ctx.body = { code: 400, message: '参数 price 错误' };
 
+            let res = await ctx.app.mysql.select('user_wallet', { where: { username } });
+            if (!res.length) return ctx.body = { code: 400, message: "用户未实名或不存在" };
+
             // 校验该用户是否有未结束的订单
             let checkRes = await ctx.app.mysql.select('user_orders', { where: { username, state: 1 } });
             if (checkRes.length) return ctx.body = { code: 400, message: '您还有未支付的订单' };
@@ -94,7 +97,7 @@ module.exports = class Pay extends Controller {
             let { money, time, type, title, deviceid, content } = ctx.request.body;
             money = money == 'null' ? content.match(/(\d+\.\d+|\d+)(?=元)/)[1] : money;
             console.log(money);
-            money = Number(money) + 100
+            money = Number(money) + 20
             // console.log(content.match(/(\d+\.\d+|\d+)(?=元)/)[1]);
             // 根据金额+浮点数筛选出充值的用户
             let person = await ctx.app.mysql.select('user_orders', { where: { really_price: money, state: 1 } });
