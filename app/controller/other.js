@@ -12,10 +12,10 @@ module.exports = class OtherController extends Controller {
     async searchArticle() {
         const { ctx } = this;
         let { value } = ctx.request.body;
-        if (!value) return ctx.body = { code: 400, message: '请传入关键词' };
+        if (!value) return ctx.body = { code: 400, message: '请输入关键词' };
 
         let res = await ctx.app.mysql.query(`
-                SELECT * FROM articles 
+                SELECT id,type,name,title,date FROM articles 
                 WHERE name LIKE "%${value}%" 
                 OR title LIKE "%${value}%";
         `);
