@@ -22,4 +22,10 @@ module.exports = {
     enable: true, // 启用前先备好好 MySQL 数据库
     package: 'egg-mysql',
   },
+  
+  //  egg-socket.io 注册到 egg 中
+  io: {
+    enable: true,
+    package: 'egg-socket.io'
+  }
 };

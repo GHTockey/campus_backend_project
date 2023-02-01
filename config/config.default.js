@@ -24,11 +24,20 @@ module.exports = appInfo => {
     // myAppName: 'egg',
   };
 
+  config.io = {
+    namespace: {
+      '/': {
+        connectionMiddleware: ['auth'],
+        packetMiddleware: ['filter'],
+      },
+    },
+  }
+
   // 关闭 csrf 安全验证
   config.security = {
     csrf: {
       enable: false,
-    }, 
+    },
   };
   // 跨域
   config.cors = {
@@ -54,10 +63,10 @@ module.exports = appInfo => {
   };
 
   // config.multipart = {
-    // mode: "stream",
-    // 为了保证文件上传的安全，框架限制了支持的的文件格式
-    // 可以通过 fileExtensions 新增支持的文件扩展名
-    // fileExtensions:['.??']
+  // mode: "stream",
+  // 为了保证文件上传的安全，框架限制了支持的的文件格式
+  // 可以通过 fileExtensions 新增支持的文件扩展名
+  // fileExtensions:['.??']
   // };
 
 
@@ -66,7 +75,7 @@ module.exports = appInfo => {
     listen: {
       // path: '',
       port: 7001
-    } 
+    }
   };
 
   return {

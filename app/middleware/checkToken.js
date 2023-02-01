@@ -3,7 +3,6 @@ module.exports = (isAdmin) => {
         try {
             // 从请求头获取 token authorization
             let token = ctx.get('Authorization').replace('Bearer ', '');
-            console.log(token);
             // 校验 token
             let checkRes = ctx.app.jwt.verify(token, ctx.app.config.jwt.secret);
             let { username } = checkRes;

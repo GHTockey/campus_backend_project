@@ -15,7 +15,7 @@ let certifiedNeedFields = ['id', 'name', 'phone', 'class', 'teacher', 'type'];
  * @param {Egg.Application} app
  */
 module.exports = app => {
-  const { router, controller } = app; // egg 实例
+  const { router, controller, io } = app; // egg 实例
   const { checkToken, checkFieldsTRAstr } = app.middleware; // 中间件
   // home 主页
   router.post('/api/home/swiper', checkFieldsTRAstr(swiperNeedFields), controller.home.addHomeSwiper); // 添加 home 轮播图
@@ -72,6 +72,9 @@ module.exports = app => {
   router.get('/api/pay/order/:order_id', controller.pay.getOrderDetail); // 获取订单详情
   router.post('/api/pay/res', controller.pay.payResponse); // 接收支付响应 
   router.get('/api/pay/balance/:user_id', controller.pay.getBalance); // 获取用户余额
+  // socket.io server
+  // console.log(io.controller.chat.ping)
+  io.of('/').route('chat', io.controller.chat.ping); // websocket
 };
 /*
 
