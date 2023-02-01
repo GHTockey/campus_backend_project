@@ -117,7 +117,12 @@ module.exports = class UserController extends Controller {
         const { ctx } = this;
         try {
             let { id } = ctx.params;
-            // 通过 ID 获取用户名并在 user_wallet 表新增这个用户
+
+            // 是否已实名
+            let wherRepeat = await ctx.app.mysql.select('users', { where: { is_realname: 1, id } });
+            if (wherRepeat.length) return ctx.body = { code: 400, message: '该用户已实名，请勿重复实名' };
+
+            // 通过 ID 获取用户名并在 user_wallet 表新增这个用户以允许用户充值
             let person = await ctx.app.mysql.select('users', { where: { id } });
             person = person[0]
             await ctx.app.mysql.insert('user_wallet', { user_id: id, username: person.username });
