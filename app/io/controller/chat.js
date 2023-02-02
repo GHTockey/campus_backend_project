@@ -6,7 +6,7 @@ module.exports = class DefaultController extends Controller {
     async ping() {
         const { ctx, app } = this;
         const message = ctx.args[0];
-        await ctx.socket.emit('res', `Hi! I've got your message: ${message}`);
+        await ctx.socket.emit('res', `你好！我收到你的消息: ${message}`);
     }
 }
 

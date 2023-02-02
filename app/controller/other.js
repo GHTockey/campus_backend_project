@@ -94,4 +94,65 @@ module.exports = class OtherController extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
+
+    // 添加评论
+    async addComment() {
+        const { ctx } = this;
+        try {
+            // 检查要评论的文章是否存在
+            let checkArticle = await ctx.app.mysql.select('articles', { where: { id: ctx.request.body.aid } });
+            if (!checkArticle.length) return ctx.body = { code: 400, message: `文章不存在(aid:${ctx.request.body.aid})` };
+            await ctx.app.mysql.insert('comments', ctx.request.body);
+            ctx.body = { code: 200, message: '添加成功' };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
+    // 删除评论
+    async delComment() {
+        const { ctx } = this;
+        try {
+            let { id } = ctx.params;
+            if (!id) return ctx.body = { code: 400, message: '参数缺失: id' };
+            // // 从请求头获取 token
+            // let token = ctx.get('Authorization').replace('Bearer ', '');
+            // // 从 token 中获取用户名
+            // let checkRes = ctx.app.jwt.verify(token, ctx.app.config.jwt.secret);
+            // let { username } = checkRes;
+            // console.log(username);
+
+            let delRes = await ctx.app.mysql.delete('comments', { id });
+            if (delRes.affectedRows) return ctx.body = { code: 200, message: '删除成功' };
+            ctx.body = { code: 400, message: '删除失败, 评论不存在' }
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
+    // 获取文章评论
+    async getArticleComments() {
+        const { ctx } = this;
+        try {
+            let { id } = ctx.params;
+            if (!id) return ctx.body = { code: 400, message: '参数缺失: id' };
+            // 检查文章是否存在
+            let checkArticle = await ctx.app.mysql.select('articles', { where: { id } });
+            if (!checkArticle.length) return ctx.body = { code: 400, message: `文章不存在(id:${id})` };
+            let comments = await ctx.app.mysql.select('comments', { where: { aid: id } });
+            if (!comments.length) return ctx.body = { code: 400, message: '该文章没有评论数据' }
+            ctx.body = { code: 200, message: '获取成功', comments };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
+    // 获取所有评论
+    async getAllComments() {
+        const { ctx } = this;
+        try {
+            let comments = await ctx.app.mysql.select('comments');
+            if (!comments.length) return ctx.body = { code: 400, message: '该文章没有评论数据' }
+            ctx.body = { code: 200, message: '获取成功', comments };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    }
 };

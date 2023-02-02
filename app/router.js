@@ -9,6 +9,8 @@ let articleNeedFields = ['userID', 'name', 'avatar', 'title', 'describe', 'conte
 let classifyNeedFields = ['title', 'icon', 'url', 'color'];
 // 添加用户实名信息
 let certifiedNeedFields = ['id', 'name', 'phone', 'class', 'teacher', 'type'];
+// 添加评论
+let commentsNeedFields = ['aid', 'name', 'avatar', 'content', 'date'];
 
 
 /**
@@ -75,6 +77,11 @@ module.exports = app => {
   // socket.io server
   // console.log(io.controller.chat.ping)
   io.of('/').route('chat', io.controller.chat.ping); // websocket
+  // 文章评论
+  router.post('/api/comment', checkFieldsTRAstr(commentsNeedFields), controller.other.addComment); // 添加评论
+  router.delete('/api/comment/:id', controller.other.delComment); // 删除评论
+  router.get('/api/comment/:id', controller.other.getArticleComments); // 获取文章评论
+  router.get('/api/comments', controller.other.getAllComments); // 获取所有评论
 };
 /*
 
