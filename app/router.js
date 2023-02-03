@@ -10,7 +10,7 @@ let classifyNeedFields = ['title', 'icon', 'url', 'color'];
 // 添加用户实名信息
 let certifiedNeedFields = ['id', 'name', 'phone', 'class', 'teacher', 'type'];
 // 添加评论
-let commentsNeedFields = ['aid', 'name', 'avatar', 'content', 'date'];
+let commentsNeedFields = ['aid', 'name', 'avatar', 'content'];
 
 
 /**
