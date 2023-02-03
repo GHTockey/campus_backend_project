@@ -102,6 +102,7 @@ module.exports = class OtherController extends Controller {
             // 检查要评论的文章是否存在
             let checkArticle = await ctx.app.mysql.select('articles', { where: { id: ctx.request.body.aid } });
             if (!checkArticle.length) return ctx.body = { code: 400, message: `文章不存在(aid:${ctx.request.body.aid})` };
+            ctx.request.body.date = ctx.request.body.date ? ctx.request.body.date : new Date();
             await ctx.app.mysql.insert('comments', ctx.request.body);
             ctx.body = { code: 200, message: '添加成功' };
         } catch (error) {
