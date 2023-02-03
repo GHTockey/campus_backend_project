@@ -138,7 +138,7 @@ module.exports = class OtherController extends Controller {
             let checkArticle = await ctx.app.mysql.select('articles', { where: { id } });
             if (!checkArticle.length) return ctx.body = { code: 400, message: `文章不存在(id:${id})` };
             let comments = await ctx.app.mysql.select('comments', { where: { aid: id } });
-            if (!comments.length) return ctx.body = { code: 400, message: '该文章没有评论数据' }
+            if (!comments.length) return ctx.body = { code: 400, message: '该文章没有评论数据', comments: [] }
             ctx.body = { code: 200, message: '获取成功', comments };
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
@@ -149,7 +149,7 @@ module.exports = class OtherController extends Controller {
         const { ctx } = this;
         try {
             let comments = await ctx.app.mysql.select('comments');
-            if (!comments.length) return ctx.body = { code: 400, message: '该文章没有评论数据' }
+            if (!comments.length) return ctx.body = { code: 400, message: '该文章没有评论数据', comments: [] }
             ctx.body = { code: 200, message: '获取成功', comments };
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
