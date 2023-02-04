@@ -2,7 +2,7 @@
 const await = require('await-stream-ready/lib/await');
 const { Controller } = require('egg');
 const utils = require('utility');
-const { strToArr, checkFields } = require('../utils');
+const { strToArr, checkFields, sendOnlineUser } = require('../utils');
 module.exports = class UserController extends Controller {
     // 获取全部用户信息
     async getUserInfoList() {
@@ -134,6 +134,7 @@ module.exports = class UserController extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
+
     // 获取实名信息列表
     async getCertifiedList() {
         const { ctx } = this;
@@ -148,5 +149,5 @@ module.exports = class UserController extends Controller {
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
-    }
+    };
 };

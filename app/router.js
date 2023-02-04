@@ -74,14 +74,14 @@ module.exports = app => {
   router.get('/api/pay/order/:order_id', controller.pay.getOrderDetail); // 获取订单详情
   router.post('/api/pay/res', controller.pay.payResponse); // 接收支付响应 
   router.get('/api/pay/balance/:user_id', controller.pay.getBalance); // 获取用户余额
-  // socket.io server
-  // console.log(io.controller.chat.ping)
-  io.of('/').route('chat', io.controller.chat.ping); // websocket
   // 文章评论
   router.post('/api/comment', checkFieldsTRAstr(commentsNeedFields), controller.other.addComment); // 添加评论
   router.delete('/api/comment/:id', controller.other.delComment); // 删除评论
   router.get('/api/comment/:id', controller.other.getArticleComments); // 获取文章评论
   router.get('/api/comments', controller.other.getAllComments); // 获取所有评论
+  // socket.io serve
+  io.of('/').route('chat', io.controller.chat.ping); // websocket
+  io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
 };
 /*
 
@@ -94,5 +94,14 @@ try {
 
 ctx.body = { code: 400, message: '参数缺失' };
 
+*/
+
+/*
+        const { ctx } = this;
+        try {
+            let data = ctx.args[0]; // 客户端发过来的数据
+        } catch (error) {
+            await ctx.socket.emit('err', { code: 400, message: "捕获到 socket.io 错误：" + error })
+        };
 */
 

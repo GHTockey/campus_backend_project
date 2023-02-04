@@ -27,7 +27,7 @@ module.exports = appInfo => {
   config.io = {
     namespace: {
       '/': {
-        connectionMiddleware: ['auth'],
+        connectionMiddleware: ['auth'], // 连接和断开
         packetMiddleware: ['filter'],
       },
     },

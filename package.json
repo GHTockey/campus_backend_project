@@ -31,7 +31,7 @@
   "scripts": {
     "start": "egg-scripts start --title=egg-server-xiaoyuan_backEnd_project",
     "stop": "egg-scripts stop --title=egg-server-xiaoyuan_backEnd_project",
-    "dev": "egg-bin dev",
+    "dev": "egg-bin dev --sticky",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
     "test-local": "egg-bin test",
