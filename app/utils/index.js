@@ -16,7 +16,7 @@ let strToArr = (data) => {
 
 // 发送在线用户数据
 let sendOnlineUser = async (ctx) => {
-    let onlineUser = await ctx.app.mysql.query(`SELECT id,name,username,avatar,signature,sex,is_admin FROM users WHERE is_online=1`);
+    let onlineUser = await ctx.app.mysql.query(`SELECT id,name,username,avatar,signature,sex,is_admin,socket_id FROM users WHERE is_online=1`);
     if(!onlineUser.length) return;
     ctx.socket.broadcast.emit('onlineUser', { message: '当前在线的用户：', onlineUser });
     ctx.socket.emit('onlineUser', { message: '当前在线的用户：', onlineUser });
