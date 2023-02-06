@@ -59,6 +59,7 @@ module.exports = app => {
     router.post('/api/search', controller.other.searchArticle); // 模糊搜索文章
     router.post('/api/upload', controller.other.fileUpload); // 文件上传
     router.get('/api/article/topping', controller.other.getToppingArticle); // 获取置顶文章
+    router.post('/api/chatlist', checkFieldsTRAstr(['sender_id', 'receiver_id']), controller.other.getChatList); // 获取历史聊天数据
     // users 用户
     router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息
     router.get('/api/user/:id', controller.user.getUserInfo); // 获取用户信息
@@ -83,6 +84,7 @@ module.exports = app => {
     io.of('/').route('chat', io.controller.chat.ping); // websocket
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
     io.of('/').route('sendMsg', io.controller.user.sendMsg); // 发送私聊消息
+    io.of('/').route('triggerMsgSend', io.controller.user.sendMsg); // 客户端触发消息返回
 };
 /*
 

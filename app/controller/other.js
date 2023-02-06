@@ -155,5 +155,19 @@ module.exports = class OtherController extends Controller {
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
-    }
+    };
+
+    // 获取聊天数据(客户端进入聊天页时主动获取历史聊天数据)
+    async getChatList() {
+        const { ctx } = this;
+        try {
+            let { sender_id, receiver_id } = ctx.request.body;
+            // console.log(ctx.request.body);
+            // let chatList = await ctx.app.mysql.select('user_msg_record', { where: { sender_id, receiver_id } });
+            let chatList = await ctx.app.mysql.query(`SELECT * FROM user_msg_record WHERE (sender_id=? and receiver_id=?) OR (sender_id=? AND receiver_id=?)`, [sender_id, receiver_id, receiver_id, sender_id]);
+            ctx.body = { code: 200, message: '获取成功', chatList };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
 };
