@@ -10,10 +10,10 @@ module.exports = class User extends Controller {
             let { username, uid, sid, name } = ctx.args[0]; // 客户端发过来的数据
             await ctx.app.mysql.update('users', { socket_id: sid, is_online: 1 }, { where: { id: uid, username } });
             // 提示用户上线
-            ctx.socket.broadcast.emit('public', { message: '用户上线', name });
+            // ctx.socket.broadcast.emit('public', { message: '用户上线', name });
             sendOnlineUser(ctx);
         } catch (error) {
-            await ctx.socket.emit('err', { code: 400, message: "捕获到 socket 错误：" + error })
+            await ctx.socket.emit('err', { code: 400, message: "捕获到 socket 错误：" + error });
         };
     };
     // 发送消息

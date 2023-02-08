@@ -81,7 +81,6 @@ module.exports = app => {
     router.get('/api/comment/:id', controller.other.getArticleComments); // 获取文章评论
     router.get('/api/comments', controller.other.getAllComments); // 获取所有评论
     // socket.io serve
-    io.of('/').route('chat', io.controller.chat.ping); // websocket
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
     io.of('/').route('sendMsg', io.controller.user.sendMsg); // 发送私聊消息
     io.of('/').route('triggerMsgSend', io.controller.user.sendMsg); // 客户端触发消息返回
