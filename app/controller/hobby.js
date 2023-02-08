@@ -193,7 +193,9 @@ module.exports = class HobbyController extends Controller {
             if (!id) return ctx.body = { code: 400, message: "参数缺失, 请检查是否传递参数: id" };
 
             // 校验有无数据
-            let res = await ctx.app.mysql.select('articles', { where: { id, type: 'hobby' } });
+            // let res = await ctx.app.mysql.select('articles', { where: { id, type: 'hobby' } });
+            let sql = "SELECT articles.*,users.is_admin,users.is_realname FROM articles JOIN users ON articles.id = ? AND users.id = articles.userID";
+            let res = await ctx.app.mysql.query(sql,[id]);
             strToArr(res); // 字符串'[]'转数组
             if (!res.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };
             ctx.body = { code: 200, message: "获取成功", data: res };
@@ -207,7 +209,9 @@ module.exports = class HobbyController extends Controller {
     async getHobbyArticleList() {
         const { ctx } = this;
         try {
-            let res = await ctx.app.mysql.select("articles", { where: { type: 'hobby' } });
+            // let res = await ctx.app.mysql.select("articles", { where: { type: 'hobby' } });
+            let sql = "SELECT articles.*,users.is_admin,users.is_realname FROM articles JOIN users WHERE articles.type=? AND users.id=articles.userID";
+            let res = await ctx.app.mysql.query(sql,['hobby']);
             strToArr(res); // 字符串'[]'转数组
             if (!res.length) return ctx.body = { code: 400, message: "没有数据" };
             ctx.body = {

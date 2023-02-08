@@ -85,7 +85,9 @@ module.exports = class SocializeController extends Controller {
         try {
             let { id } = ctx.params;
             if (!!id) { // 判断有无 ID
-                let res = await ctx.app.mysql.select('articles', { where: { id, type: 'socialize' } });
+                // let res = await ctx.app.mysql.select('articles', { where: { id, type: 'socialize' } });
+                let sql = "SELECT articles.*,users.is_admin,users.is_realname FROM articles JOIN users ON articles.id = ? AND users.id = articles.userID";
+                let res = await ctx.app.mysql.query(sql,[id]);
                 strToArr(res); // 字符串'[]'转数组
                 if (res.length) {
                     ctx.body = {
@@ -115,7 +117,9 @@ module.exports = class SocializeController extends Controller {
     async getSocializeArticleList() {
         const { ctx } = this;
         try {
-            let res = await ctx.app.mysql.select("articles", { where: { type: 'socialize' } });
+            // let res = await ctx.app.mysql.select("articles", { where: { type: 'socialize' } });
+            let sql = "SELECT articles.*,users.is_admin,users.is_realname FROM articles JOIN users WHERE articles.type=? AND users.id=articles.userID";
+            let res = await ctx.app.mysql.query(sql,['socialize']);
             strToArr(res); // 字符串'[]'转数组
             if (res.length) {
                 ctx.body = {

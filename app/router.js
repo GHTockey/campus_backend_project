@@ -83,7 +83,7 @@ module.exports = app => {
     // socket.io serve
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
     io.of('/').route('sendMsg', io.controller.user.sendMsg); // 发送私聊消息
-    io.of('/').route('triggerMsgSend', io.controller.user.sendMsg); // 客户端触发消息返回
+    io.of('/').route('triggerMsgSend', io.controller.user.sendMsg); // 客户端触发消息返回 
 };
 /*
 
