@@ -272,12 +272,25 @@ module.exports = class HomeController extends Controller {
     };
   };
 
-  // 获取所有 home 轮播图数据
+  // 获取所有 home 文章数据
   async getHomeArticleList() {
     const { ctx } = this;
     try {
       // let res = await ctx.app.mysql.select("articles", { where: { type: 'home' } });
-      let sql = "SELECT articles.*,users.is_admin,users.is_realname FROM articles JOIN users WHERE articles.type=? AND users.id=articles.userID";
+      let sql = `SELECT
+                  articles.*, 
+                  users.avatar, 
+                  users.name, 
+                  users.is_admin, 
+                  users.is_realname
+                FROM
+                  articles
+                  INNER JOIN
+                  users
+                  ON 
+                    articles.userID = users.id
+                  WHERE
+                    articles.type=?`;
       let res = await ctx.app.mysql.query(sql,['home']);
       strToArr(res); // 字符串'[]'转数组
       if (res.length) {

@@ -118,7 +118,21 @@ module.exports = class SocializeController extends Controller {
         const { ctx } = this;
         try {
             // let res = await ctx.app.mysql.select("articles", { where: { type: 'socialize' } });
-            let sql = "SELECT articles.*,users.is_admin,users.is_realname FROM articles JOIN users WHERE articles.type=? AND users.id=articles.userID";
+            let sql = `SELECT
+                        articles.*, 
+                        users.avatar, 
+                        users.name, 
+                        users.is_admin, 
+                        users.is_realname
+                    FROM
+                        articles
+                        INNER JOIN
+                        users
+                        ON 
+                        articles.userID = users.id
+                        WHERE
+                        articles.type=?
+                    `;
             let res = await ctx.app.mysql.query(sql,['socialize']);
             strToArr(res); // 字符串'[]'转数组
             if (res.length) {
