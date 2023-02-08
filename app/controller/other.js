@@ -82,7 +82,9 @@ module.exports = class OtherController extends Controller {
             if (!type) return ctx.body = { code: 400, message: '参数缺失: type' };
 
             // 校验置顶文章数
-            let articles = await ctx.app.mysql.select('articles', { where: { type, is_topping: 1 } });
+            // let articles = await ctx.app.mysql.select('articles', { where: { type, is_topping: 1 } });
+            let sql = "SELECT articles.*,users.is_admin,users.is_realname FROM articles JOIN users WHERE articles.type=? AND articles.is_topping=1 AND users.id=articles.userID";
+            let articles = await ctx.app.mysql.query(sql,[type]);
             if (!articles.length) return ctx.body = { code: 400, message: `分类：${type} 下没有置顶文章` };
             strToArr(articles);
             ctx.body = {
