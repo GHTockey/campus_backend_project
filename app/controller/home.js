@@ -156,7 +156,7 @@ module.exports = class HomeController extends Controller {
   async addHomeArticle() {
     const { ctx } = this;
     try {
-      console.log(ctx.request.body);
+      // console.log(ctx.request.body);
       await ctx.app.mysql.insert('articles', { ...ctx.request.body, type: 'home' });
       ctx.body = {
         code: 200,
