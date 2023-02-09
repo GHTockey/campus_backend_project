@@ -21,7 +21,7 @@ module.exports = (app) => {
     // console.log(ctx.socket.id, '已断开');
     if (offlineUser.length) {
       // 提示在线用户 XXX 已离线
-      ctx.socket.broadcast.emit('public', { message: '用户离线', ...offlineUser[0] });
+      // ctx.socket.broadcast.emit('public', { message: '用户离线', ...offlineUser[0] });
       sendOnlineUser(ctx);
     };
   };

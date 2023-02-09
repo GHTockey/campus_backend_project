@@ -87,10 +87,10 @@ module.exports = class SocializeController extends Controller {
             if (!!id) { // 判断有无 ID
                 // let res = await ctx.app.mysql.select('articles', { where: { id, type: 'socialize' } });
                 let sql = `SELECT articles.*,users.is_admin,users.is_realname,users.avatar,users.name
-                FROM articles 
-                JOIN users 
-                ON articles.id = ? 
-                AND users.id = articles.userID`;
+                        FROM articles 
+                        JOIN users 
+                        ON articles.id = ? 
+                        AND users.id = articles.userID`;
                 let res = await ctx.app.mysql.query(sql,[id]);
                 strToArr(res); // 字符串'[]'转数组
                 if (res.length) {
