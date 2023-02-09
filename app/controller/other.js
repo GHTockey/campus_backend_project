@@ -13,12 +13,12 @@ module.exports = class OtherController extends Controller {
         const { ctx } = this;
         let { value } = ctx.request.body;
         if (!value) return ctx.body = { code: 400, message: '请输入关键词' };
-
-        let res = await ctx.app.mysql.query(`
-                SELECT id,type,name,title,date FROM articles 
-                WHERE name LIKE "%${value}%" 
-                OR title LIKE "%${value}%";
-        `);
+        let sql = `SELECT users.name, articles.title
+                    FROM users
+                    JOIN articles
+                    ON users.id = articles.userID
+                    WHERE users.name LIKE '%${value}%' OR articles.title LIKE '%${value}%';`
+        let res = await ctx.app.mysql.query(sql);
         strToArr(res); // 字符串'[]'转数组
         ctx.body = {
             code: 200,
