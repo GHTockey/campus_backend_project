@@ -194,7 +194,11 @@ module.exports = class HobbyController extends Controller {
 
             // 校验有无数据
             // let res = await ctx.app.mysql.select('articles', { where: { id, type: 'hobby' } });
-            let sql = "SELECT articles.*,users.is_admin,users.is_realname FROM articles JOIN users ON articles.id = ? AND users.id = articles.userID";
+            let sql = `SELECT articles.*,users.is_admin,users.is_realname,users.avatar,users.name
+            FROM articles 
+            JOIN users 
+            ON articles.id = ? 
+            AND users.id = articles.userID`;
             let res = await ctx.app.mysql.query(sql,[id]);
             strToArr(res); // 字符串'[]'转数组
             if (!res.length) return ctx.body = { code: 400, message: "没有与此 id 相关的数据" };

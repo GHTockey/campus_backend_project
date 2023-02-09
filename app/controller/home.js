@@ -131,7 +131,7 @@ module.exports = class HomeController extends Controller {
   async getHomeSwiperList() {
     const { ctx } = this;
     try {
-      let res = await ctx.app.mysql.select("swipers",{where:{type:'home'}});
+      let res = await ctx.app.mysql.select("swipers", { where: { type: 'home' } });
       if (res.length) {
         ctx.body = {
           code: 200,
@@ -243,8 +243,12 @@ module.exports = class HomeController extends Controller {
       let { id } = ctx.params;
       if (!!id) { // 判断有无 ID
         // let res = await ctx.app.mysql.select('articles', { where: { id, type: 'home' } });
-        let sql = "SELECT articles.*,users.is_admin,users.is_realname FROM articles JOIN users ON articles.id = ? AND users.id = articles.userID";
-        let res = await ctx.app.mysql.query(sql,[id]);
+        let sql = `SELECT articles.*,users.is_admin,users.is_realname,users.avatar,users.name
+                    FROM articles 
+                    JOIN users 
+                    ON articles.id = ? 
+                    AND users.id = articles.userID`;
+        let res = await ctx.app.mysql.query(sql, [id]);
         strToArr(res); // 字符串'[]'转数组
         if (res.length) {
           ctx.body = {
@@ -291,7 +295,7 @@ module.exports = class HomeController extends Controller {
                     articles.userID = users.id
                   WHERE
                     articles.type=?`;
-      let res = await ctx.app.mysql.query(sql,['home']);
+      let res = await ctx.app.mysql.query(sql, ['home']);
       strToArr(res); // 字符串'[]'转数组
       if (res.length) {
         ctx.body = {

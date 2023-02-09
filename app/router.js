@@ -4,7 +4,7 @@
 // 添加轮播图
 let swiperNeedFields = ['title', 'image', 'cid'];
 // 添加文章
-let articleNeedFields = ['userID', 'name', 'avatar', 'title', 'describe', 'content', 'is_concern', 'is_like', 'is_topping', 'is_boutique', 'is_collection', 'views'];
+let articleNeedFields = ['userID', 'title', 'describe', 'content',  'is_topping', 'is_boutique'];
 // 添加兴趣分类
 let classifyNeedFields = ['title', 'icon', 'url', 'color'];
 // 添加用户实名信息
