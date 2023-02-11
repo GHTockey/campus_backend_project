@@ -13,7 +13,7 @@ module.exports = class OtherController extends Controller {
         const { ctx } = this;
         let { value } = ctx.request.body;
         if (!value) return ctx.body = { code: 400, message: '请输入关键词' };
-        let sql = `SELECT users.name, articles.id,articles.type,articles.title,articles.date
+        let sql = `SELECT users.name, articles.id, articles.type, articles.title, articles.date
                     FROM users
                     JOIN articles
                     ON users.id = articles.userID

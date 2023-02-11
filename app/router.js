@@ -61,7 +61,7 @@ module.exports = app => {
     router.get('/api/article/topping', controller.other.getToppingArticle); // 获取置顶文章
     router.post('/api/chatlist', checkFieldsTRAstr(['sender_id', 'receiver_id']), controller.other.getChatList); // 获取历史聊天数据
     // users 用户
-    router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息 
+    router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息
     router.get('/api/user/:id', controller.user.getUserInfo); // 获取用户信息
     router.post('/api/user/pwd/:id', controller.user.updUserPwd); // 修改用户密码
     router.post('/api/user/info/:id', checkFieldsTRAstr(), controller.user.updUserInfo); // 修改用户信息
@@ -69,6 +69,7 @@ module.exports = app => {
     router.delete('/api/user/:id', checkToken(true), controller.user.delUser); // 删除用户
     router.post('/api/certified/:id', checkFieldsTRAstr(certifiedNeedFields), controller.user.addCertified); // 添加用户实名信息
     router.get('/api/certified', controller.user.getCertifiedList); // 获取所有已实名用户
+    router.get('/api/basiclist', controller.user.getUserBasicList); // 获取所有已注册用户名单(仅仅用于注册前输入验证码)
     // 钱包 
     router.post('/api/pay/create', checkFieldsTRAstr(['username', 'price']), controller.pay.createOrder); // 创建订单
     router.get('/api/pay/orders/:username', controller.pay.getOrderList); // 获取订单列表
@@ -80,7 +81,7 @@ module.exports = app => {
     router.delete('/api/comment/:id', controller.other.delComment); // 删除评论
     router.get('/api/comment/:id', controller.other.getArticleComments); // 获取文章评论
     router.get('/api/comments', controller.other.getAllComments); // 获取所有评论
-    // socket.io serve
+    // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
     io.of('/').route('sendMsg', io.controller.user.sendMsg); // 发送私聊消息
     io.of('/').route('triggerMsgSend', io.controller.user.sendMsg); // 客户端触发消息返回 

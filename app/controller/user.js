@@ -150,4 +150,17 @@ module.exports = class UserController extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
+
+    // 获取所有已注册用户名单
+    async getUserBasicList() {
+        const { ctx } = this;
+        try {
+            let res = await ctx.app.mysql.query(`select users.username from users`); // [{uname},...]
+            let newRes = [];
+            res.forEach(el => newRes.push(el.username));
+            ctx.body = {code: 200, data: newRes};
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error } 
+        };
+    };
 };
