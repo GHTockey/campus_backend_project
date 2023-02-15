@@ -85,7 +85,7 @@ module.exports = class Pay extends Controller {
             let payee_code = await ctx.app.mysql.query('SELECT payee_code FROM pay_codes WHERE order_id = ?', order_id);
             ctx.body = { code: 200, message: '获取成功', order: { ...order[0], payee_code: payee_code[0]?.payee_code } };
         } catch (error) {
-            ctx.body = { code: 400, message: "捕获到错误：" + error }
+            ctx.body = { code: 400, message: "捕获到错误：" + error };
         };
     };
     // 支付响应
@@ -96,15 +96,15 @@ module.exports = class Pay extends Controller {
         try {
             let { money, time, type, title, deviceid, content } = ctx.request.body;
             money = money == 'null' ? content.match(/(\d+\.\d+|\d+)(?=元)/)[1] : money;
-            console.log(money);
+            // console.log(money);
             money = Number(money) + 20
             // console.log(content.match(/(\d+\.\d+|\d+)(?=元)/)[1]);
-            // 根据金额+浮点数筛选出充值的用户
+            // 根据金额浮点数筛选出充值的用户
             let person = await ctx.app.mysql.select('user_orders', { where: { really_price: money, state: 1 } });
             if (!person.length) return ctx.body = { code: 400, message: '当前没有订单' };
 
             person = person[0];
-            console.log(person);
+            // console.log(person);
             let { username, order_id, really_price, remarks } = person;
             let pay_time = new Date(time); // 完成支付时间
 
@@ -116,8 +116,12 @@ module.exports = class Pay extends Controller {
             let yue = await ctx.app.mysql.select('user_wallet', { where: { username } });
             await ctx.app.mysql.update('user_wallet', { money: yue[0].money + money }, { where: { username } });
 
-            console.log(`${pay_time} 用户 ${person.username} 充值 ${person.really_price} 成功 `);
+            // console.log(`${pay_time} 用户 ${person.username} 充值 ${person.really_price} 成功 `);
             ctx.body = { code: 200, message: '充值完成' };
+
+            // 主动发送 socket 响应
+            let sid = await ctx.app.mysql.query(`SELECT users.socket_id FROM users WHERE username=?`, [username]);
+            console.log('sid', sid);
         } catch (error) {
             // console.log(error);
             ctx.body = { code: 400, message: "捕获到错误：" + error }

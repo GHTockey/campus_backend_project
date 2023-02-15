@@ -81,10 +81,12 @@ module.exports = app => {
     router.delete('/api/comment/:id', controller.other.delComment); // 删除评论
     router.get('/api/comment/:id', controller.other.getArticleComments); // 获取文章评论
     router.get('/api/comments', controller.other.getAllComments); // 获取所有评论
+    // 交易
+    
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
     io.of('/').route('sendMsg', io.controller.user.sendMsg); // 发送私聊消息
-    io.of('/').route('triggerMsgSend', io.controller.user.sendMsg); // 客户端触发消息返回 
+    io.of('/').route('triggerMsgSend', io.controller.user.sendMsg); // 客户端触发消息返回
 };
 /*
 
