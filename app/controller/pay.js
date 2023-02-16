@@ -90,8 +90,7 @@ module.exports = class Pay extends Controller {
     };
     // 支付响应
     async payResponse() {
-        const { ctx } = this;
-        console.log(ctx.request.body);
+        const { ctx,app } = this;
         // 订单状态：-1  |  订单过期 0   |   等待支付 1   |   完成  2
         try {
             let { money, time, type, title, deviceid, content } = ctx.request.body;
@@ -119,12 +118,13 @@ module.exports = class Pay extends Controller {
             // console.log(`${pay_time} 用户 ${person.username} 充值 ${person.really_price} 成功 `);
             ctx.body = { code: 200, message: '充值完成' };
 
-            // 主动发送 socket 响应
-            let sid = await ctx.app.mysql.query(`SELECT users.socket_id FROM users WHERE username=?`, [username]);
-            console.log('sid', sid);
+            // 主动发送 socket 响应到客户端
+            let user = await ctx.app.mysql.query(`SELECT users.socket_id,users.id FROM users WHERE username=?`, [username]);
+            // console.log(user[0].socket_id);
+            app.io.to(user[0].socket_id).emit('payOutcome', { code: 200, message: '支付完成', username, uid: user[0].id, money });
         } catch (error) {
             // console.log(error);
-            ctx.body = { code: 400, message: "捕获到错误：" + error }
+            ctx.body = { code: 400, message: "捕获到错误：" + error };
         };
     };
     // 获取余额

@@ -4,7 +4,7 @@
 // 添加轮播图
 let swiperNeedFields = ['title', 'image', 'cid'];
 // 添加文章
-let articleNeedFields = ['userID', 'title', 'describe', 'content',  'is_topping', 'is_boutique'];
+let articleNeedFields = ['userID', 'title', 'describe', 'content', 'is_topping', 'is_boutique'];
 // 添加兴趣分类
 let classifyNeedFields = ['title', 'icon', 'url', 'color'];
 // 添加用户实名信息
@@ -82,7 +82,7 @@ module.exports = app => {
     router.get('/api/comment/:id', controller.other.getArticleComments); // 获取文章评论
     router.get('/api/comments', controller.other.getAllComments); // 获取所有评论
     // 交易
-    
+
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
     io.of('/').route('sendMsg', io.controller.user.sendMsg); // 发送私聊消息
