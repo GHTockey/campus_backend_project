@@ -124,18 +124,24 @@ module.exports = class Errand extends Controller {
         try {
             let { uid } = ctx.params;
             // let res = await ctx.app.mysql.select('errand_orders', { where: { issue_id: uid } });
-            let res = await ctx.app.mysql.query(`SELECT
-                                                    errand_orders.*,
-                                                    users.avatar
-                                                FROM
-                                                    errand_orders
-                                                JOIN
-                                                    users
-                                                ON
-                                                    errand_orders.issue_id = users.id
-                                                WHERE
-                                                    errand_orders.issue_id=?`, [uid]);
+            let res = await ctx.app.mysql.query(`SELECT errand_orders.*, users.avatar
+                                                 FROM errand_orders
+                                                 JOIN users
+                                                 ON errand_orders.issue_id = users.id
+                                                 WHERE errand_orders.issue_id=?`, [uid]);
             ctx.body = { code: 200, message: '获取成功', data: res };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
+    // 删除跑单
+    async delErrandOrder() {
+        const { ctx } = this;
+        try {
+            let { oid } = ctx.params;
+            let executeRes = await ctx.app.mysql.delete(`errand_orders`, { oid });
+            if (executeRes.affectedRows == 0) return ctx.body = { code: 400, message: '没有与此ID相关的数据' };
+            ctx.body = { code: 200, message: '删除成功' };
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };

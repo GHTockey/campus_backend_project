@@ -89,6 +89,7 @@ module.exports = app => {
     router.get('/api/tasklist', controller.errand.errandList); // 跑单列表
     router.get('/api/tasklist/receive/:uid', controller.errand.getMyReceiveList); // 获取我的接单列表
     router.get('/api/tasklist/issue/:uid', controller.errand.getMyIssueList); // 获取我发布的跑单列表
+    router.delete('/api/task/:oid', controller.errand.delErrandOrder); // 删除跑单
 
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
