@@ -81,7 +81,14 @@ module.exports = app => {
     router.delete('/api/comment/:id', controller.other.delComment); // 删除评论
     router.get('/api/comment/:id', controller.other.getArticleComments); // 获取文章评论
     router.get('/api/comments', controller.other.getAllComments); // 获取所有评论
-    // 交易
+    // 跑腿
+    router.post('/api/task', checkFieldsTRAstr(['issue_id', 'price', 'from', 'to']), controller.errand.createErrandOrders); // 发布跑单
+    router.post('/api/task/receice', checkFieldsTRAstr(['oid', 'receive_id','state']), controller.errand.takeOrders); // 接单者操作
+    router.post('/api/task/issue', checkFieldsTRAstr(['oid', 'issue_id','state']), controller.errand.issueHandler); // 发布者操作
+    router.get('/api/task/:oid', controller.errand.errandDetail); // 跑单详情
+    router.get('/api/tasklist', controller.errand.errandList); // 跑单列表
+    router.get('/api/tasklist/receive/:uid', controller.errand.getMyReceiveList); // 获取我的接单列表
+    router.get('/api/tasklist/issue/:uid', controller.errand.getMyIssueList); // 获取我发布的跑单列表
 
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
