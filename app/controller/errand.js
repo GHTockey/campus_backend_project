@@ -69,7 +69,7 @@ module.exports = class Errand extends Controller {
             let { oid } = ctx.params;
             if (!oid) return ctx.body = { code: 400, message: '请在URL传入参数: /[oid]' };
             // let res = await ctx.app.mysql.select('errand_orders', { where: { oid } });
-            let res = await ctx.app.mysql.query(`SELECT errand_orders.*,users.avatar
+            let res = await ctx.app.mysql.query(`SELECT errand_orders.*,users.avatar,users.name
                                                  from errand_orders
                                                  join users
                                                  on errand_orders.issue_id = users.id
@@ -87,7 +87,7 @@ module.exports = class Errand extends Controller {
             // let { uid } = ctx.params;
             // if (!uid) return ctx.body = { code: 404, message: '参数缺失: uid' };
             // let res = await ctx.app.mysql.select('errand_orders', { where: { state: 0 } });
-            let res = await ctx.app.mysql.query(`SELECT errand_orders.*,users.avatar 
+            let res = await ctx.app.mysql.query(`SELECT errand_orders.*,users.avatar,users.name
                                                 FROM errand_orders 
                                                 JOIN users 
                                                 ON errand_orders.issue_id = users.id
@@ -104,13 +104,13 @@ module.exports = class Errand extends Controller {
             let { uid } = ctx.params;
             let res = await ctx.app.mysql.query(`SELECT
                                                     errand_orders.*,
-                                                    users.avatar
+                                                    users.avatar,users.name
                                                 FROM
                                                     errand_orders
                                                 JOIN
                                                     users
                                                 ON
-                                                    errand_orders.receive_id = users.id
+                                                    errand_orders.issue_id = users.id
                                                 WHERE
                                                     state !=4 AND state !=5 AND receive_id=?`, [uid]);
             ctx.body = { code: 200, message: '获取成功', data: res };
@@ -124,7 +124,7 @@ module.exports = class Errand extends Controller {
         try {
             let { uid } = ctx.params;
             // let res = await ctx.app.mysql.select('errand_orders', { where: { issue_id: uid } });
-            let res = await ctx.app.mysql.query(`SELECT errand_orders.*, users.avatar
+            let res = await ctx.app.mysql.query(`SELECT errand_orders.*, users.avatar,users.name
                                                  FROM errand_orders
                                                  JOIN users
                                                  ON errand_orders.issue_id = users.id
