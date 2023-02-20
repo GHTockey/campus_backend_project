@@ -84,7 +84,7 @@ module.exports = class OtherController extends Controller {
         let fileStream;
         try {
             try {
-                fileStream = await this.ctx.getFileStream();
+                fileStream = await ctx.getFileStream();
                 // console.log(fileStream);
             } catch (err) {
                 return ctx.body = { code: 400, message: '没有传入文件或者不支持的文件格式' };
@@ -96,12 +96,13 @@ module.exports = class OtherController extends Controller {
             let updRes = await ctx.app.tencentCloudCos.putObject({
                 Key: `${type}/${fileStream.filename}`,
                 Body: fileStream,
-                ContentLength: fileStream._readableState.length,
+                // ContentLength: 1517769,
                 // onProgress: function (progressData) {
                 //     console.log(JSON.stringify(progressData));
                 // }
             });
             if (updRes.statusCode === 200) {
+                // console.log(updRes);
                 ctx.body = {
                     message: '上传完成',
                     code: 200,
@@ -109,7 +110,7 @@ module.exports = class OtherController extends Controller {
                         filename: fileStream.filename,
                         url: `https://${updRes.Location}`,
                         // size: `${Math.floor(fileStream._readableState.length / 1024 / 1024 * 100) / 100}MB`
-                        size: fileStream._readableState.length
+                        // size: fileStream._readableState.length
                     }
                 }
             } else {
