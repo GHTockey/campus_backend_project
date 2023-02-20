@@ -83,13 +83,17 @@ module.exports = app => {
     router.get('/api/comments', controller.other.getAllComments); // 获取所有评论
     // 跑腿
     router.post('/api/task', checkFieldsTRAstr(['issue_id', 'price', 'from', 'to']), controller.errand.createErrandOrders); // 发布跑单
-    router.post('/api/task/receice', checkFieldsTRAstr(['oid', 'receive_id','state']), controller.errand.takeOrders); // 接单者操作
-    router.post('/api/task/issue', checkFieldsTRAstr(['oid', 'issue_id','state']), controller.errand.issueHandler); // 发布者操作
+    router.post('/api/task/receice', checkFieldsTRAstr(['oid', 'receive_id', 'state']), controller.errand.takeOrders); // 接单者操作
+    router.post('/api/task/issue', checkFieldsTRAstr(['oid', 'issue_id', 'state']), controller.errand.issueHandler); // 发布者操作
     router.get('/api/task/:oid', controller.errand.errandDetail); // 跑单详情
     router.get('/api/tasklist', controller.errand.errandList); // 跑单列表
     router.get('/api/tasklist/receive/:uid', controller.errand.getMyReceiveList); // 获取我的接单列表
     router.get('/api/tasklist/issue/:uid', controller.errand.getMyIssueList); // 获取我发布的跑单列表
     router.delete('/api/task/:oid', controller.errand.delErrandOrder); // 删除跑单
+    // 兼职
+    router.post('/api/job', checkFieldsTRAstr(['uid', 'price', 'describe', 'tag', 'phone', 'title']), controller.job.addJob); // 新增兼职
+    router.delete('/api/job/:id', controller.job.delJob); // 删除兼职
+    router.get('/api/job/list', controller.job.getJobList);
 
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
