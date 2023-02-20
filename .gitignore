@@ -14,3 +14,4 @@ run/
 typings/
 .nyc_output/
 app/public/imgs/*
+config/config.default.js
