@@ -62,6 +62,18 @@ module.exports = appInfo => {
     }
   };
 
+  // 腾讯云 cos
+  config.tencentCloudCos = {
+    client: {
+      SecretId: 'AKID4zg8LK4jASXNzMdfS1LdgV5Um04va4KL',
+      SecretKey: 'ta9XnpcBZnpfLtHSRDoDPRGrHXZMuEJA',
+      defaultParams: {
+        Bucket: 'campus-1312676635',
+        Region: 'ap-shanghai',
+      }
+    }
+  };
+
   // config.multipart = {
   // mode: "stream",
   // 为了保证文件上传的安全，框架限制了支持的的文件格式

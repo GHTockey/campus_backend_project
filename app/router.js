@@ -57,7 +57,7 @@ module.exports = app => {
     router.post('/api/admin/login', controller.login.adminLogin); // 管理员登录
     // other 其它
     router.post('/api/search', controller.other.searchArticle); // 模糊搜索文章
-    router.post('/api/upload', controller.other.fileUpload); // 文件上传
+    router.post('/api/upload', controller.other.fileUpdCos); // 文件上传
     router.get('/api/article/topping', controller.other.getToppingArticle); // 获取置顶文章
     router.post('/api/chatlist', checkFieldsTRAstr(['sender_id', 'receiver_id']), controller.other.getChatList); // 获取历史聊天数据
     // users 用户

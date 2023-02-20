@@ -6,7 +6,13 @@ const path = require('path');
 const awaitWriteStream = require("await-stream-ready").write;
 // 用于关闭管道流
 const sendToWormhole = require("stream-wormhole");
-const { strToArr } = require('../utils');;
+// 腾讯云cos
+// const COS = require('cos-nodejs-sdk-v5');
+// const cos = new COS({
+//     SecretId: 'AKID4zg8LK4jASXNzMdfS1LdgV5Um04va4KL',
+//     SecretKey: 'ta9XnpcBZnpfLtHSRDoDPRGrHXZMuEJA'
+// });
+const { strToArr } = require('../utils');
 
 module.exports = class OtherController extends Controller {
     async searchArticle() {
@@ -27,7 +33,7 @@ module.exports = class OtherController extends Controller {
         };
     };
 
-    // 文件上传
+    // 文件上传（本地）
     async fileUpload() {
         const { ctx } = this;
         let fileStream;
@@ -72,6 +78,47 @@ module.exports = class OtherController extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error };
         };
     };
+    // 文件上传 (腾讯云cos)
+    async fileUpdCos() {
+        const { ctx } = this;
+        let fileStream;
+        try {
+            try {
+                fileStream = await this.ctx.getFileStream();
+                // console.log(fileStream);
+            } catch (err) {
+                return ctx.body = { code: 400, message: '没有传入文件或者不支持的文件格式' };
+
+            };
+            let { type } = fileStream.fields;
+            type = type ? type : 'other';
+
+            let updRes = await ctx.app.tencentCloudCos.putObject({
+                Key: `${type}/${fileStream.filename}`,
+                Body: fileStream,
+                ContentLength: fileStream._readableState.length,
+                // onProgress: function (progressData) {
+                //     console.log(JSON.stringify(progressData));
+                // }
+            });
+            if (updRes.statusCode === 200) {
+                ctx.body = {
+                    message: '上传完成',
+                    code: 200,
+                    data: {
+                        filename: fileStream.filename,
+                        url: `https://${updRes.Location}`,
+                        // size: `${Math.floor(fileStream._readableState.length / 1024 / 1024 * 100) / 100}MB`
+                        size: fileStream._readableState.length
+                    }
+                }
+            } else {
+                ctx.body = { code: 400, message: '上传到 cos 中发生错误', info: updRes }
+            }
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error };
+        };
+    };
 
     // 获取置顶文章
     async getToppingArticle() {
@@ -95,7 +142,7 @@ module.exports = class OtherController extends Controller {
                         articles.is_topping=1 
                        AND 
                         users.id=articles.userID`;
-            let articles = await ctx.app.mysql.query(sql,[type]);
+            let articles = await ctx.app.mysql.query(sql, [type]);
             if (!articles.length) return ctx.body = { code: 400, message: `分类：${type} 下没有置顶文章` };
             strToArr(articles);
             ctx.body = {
