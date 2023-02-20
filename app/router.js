@@ -94,6 +94,7 @@ module.exports = app => {
     router.post('/api/job', checkFieldsTRAstr(['uid', 'price', 'describe', 'tag', 'phone', 'title']), controller.job.addJob); // 新增兼职
     router.delete('/api/job/:id', controller.job.delJob); // 删除兼职
     router.get('/api/job/list', controller.job.getJobList);
+    router.get('/api/job/my/:uid', controller.job.getMySendJobs);
 
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
