@@ -11,14 +11,15 @@ let classifyNeedFields = ['title', 'icon', 'url', 'color'];
 let certifiedNeedFields = ['id', 'name', 'phone', 'class', 'teacher', 'type'];
 // 添加评论
 let commentsNeedFields = ['aid', 'name', 'avatar', 'content'];
-
+// 新增兼职
+let jobNeedFields = ['uid', 'price', 'describe', 'tag', 'phone', 'title'];
 
 /**
  * @param {Egg.Application} app
  */
 module.exports = app => {
-    const { router, controller, io } = app; // egg 实例
-    const { checkToken, checkFieldsTRAstr } = app.middleware; // 中间件
+    const { router, controller,middleware, io } = app; // egg 实例
+    const { checkToken, checkFieldsTRAstr } = middleware; // 中间件
     // home 主页
     router.post('/api/home/swiper', checkFieldsTRAstr(swiperNeedFields), controller.home.addHomeSwiper); // 添加 home 轮播图
     router.delete('/api/home/swiper/:id', controller.home.delHomeSwiper); // 删除 home 轮播图
@@ -66,7 +67,7 @@ module.exports = app => {
     router.post('/api/user/pwd/:id', controller.user.updUserPwd); // 修改用户密码
     router.post('/api/user/info/:id', checkFieldsTRAstr(), controller.user.updUserInfo); // 修改用户信息
     router.post('/api/user/:id', checkFieldsTRAstr(), controller.user.updUserData); // 修改用户数据
-    router.delete('/api/user/:id', checkToken(true), controller.user.delUser); // 删除用户
+    router.delete('/api/user/:id', checkToken('admin'), controller.user.delUser); // 删除用户
     router.post('/api/certified/:id', checkFieldsTRAstr(certifiedNeedFields), controller.user.addCertified); // 添加用户实名信息
     router.get('/api/certified', controller.user.getCertifiedList); // 获取所有已实名用户
     router.get('/api/basiclist', controller.user.getUserBasicList); // 获取所有已注册用户名单(仅仅用于注册前输入验证码)
@@ -91,10 +92,10 @@ module.exports = app => {
     router.get('/api/tasklist/issue/:uid', controller.errand.getMyIssueList); // 获取我发布的跑单列表
     router.delete('/api/task/:oid', controller.errand.delErrandOrder); // 删除跑单
     // 兼职
-    router.post('/api/job', checkFieldsTRAstr(['uid', 'price', 'describe', 'tag', 'phone', 'title']), controller.job.addJob); // 新增兼职
+    router.post('/api/job', checkFieldsTRAstr(jobNeedFields), controller.job.addJob); // 新增兼职
     router.delete('/api/job/:id', controller.job.delJob); // 删除兼职
-    router.get('/api/job/list', controller.job.getJobList);
-    router.get('/api/job/my/:uid', controller.job.getMySendJobs);
+    router.get('/api/job/list', controller.job.getJobList); // 获取兼职列表
+    router.get('/api/job/my/:uid', controller.job.getMySendJobs); // 获取我发布的兼职列表
 
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态

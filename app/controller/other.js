@@ -15,6 +15,7 @@ const sendToWormhole = require("stream-wormhole");
 const { strToArr } = require('../utils');
 
 module.exports = class OtherController extends Controller {
+    // 模糊搜索文章
     async searchArticle() {
         const { ctx } = this;
         let { value } = ctx.request.body;
@@ -32,7 +33,6 @@ module.exports = class OtherController extends Controller {
             data: res
         };
     };
-
     // 文件上传（本地）
     async fileUpload() {
         const { ctx } = this;

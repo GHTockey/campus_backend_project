@@ -18,6 +18,7 @@ module.exports = class Job extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
+    // 删除兼职
     async delJob() {
         const { ctx } = this;
         try {
@@ -29,6 +30,7 @@ module.exports = class Job extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
+    // 获取兼职列表
     async getJobList() {
         const { ctx } = this;
         try {
@@ -43,14 +45,15 @@ module.exports = class Job extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
+    // 获取我发布的兼职列表
     async getMySendJobs() {
         const { ctx } = this;
         try {
-            let {uid} = ctx.params;
-            let executeRes = await ctx.app.mysql.select('jobs',{where:{uid}});
+            let { uid } = ctx.params;
+            let executeRes = await ctx.app.mysql.select('jobs', { where: { uid } });
             strToArr(executeRes)
-            if(!executeRes.length) return ctx.body = {code: 200,message:'没有与此 id 相关的数据'};
-            ctx.body = {code:200,message:'获取成功',data:executeRes}
+            if (!executeRes.length) return ctx.body = { code: 200, message: '没有与此 id 相关的数据' };
+            ctx.body = { code: 200, message: '获取成功', data: executeRes }
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };

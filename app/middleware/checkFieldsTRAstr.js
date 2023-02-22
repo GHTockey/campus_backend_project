@@ -1,4 +1,7 @@
-// 校验字段参数并转换字符串 data:obj  field:str[]
+/**
+ * 校验字段参数并转换字符串 data:obj  field:str[]
+ * @param {*} fields 必填字段
+ */
 module.exports = (fields) => {
     return async function (ctx, next) {
         // 校验字段

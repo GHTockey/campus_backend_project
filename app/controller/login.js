@@ -26,7 +26,7 @@ module.exports = class LoginController extends Controller {
                     token: 'Bearer ' + ctx.app.jwt.sign(
                         { username },
                         ctx.app.config.jwt.secret, // token 安全字符串
-                        { expiresIn: '3h' } // token 有效时间
+                        { expiresIn: ctx.app.config.tokenEffectiveTime } // token 有效时间
                     ),
                     userInfo: userInfo[0]
                 };
@@ -42,7 +42,7 @@ module.exports = class LoginController extends Controller {
                     token: 'Bearer ' + ctx.app.jwt.sign(
                         { username },
                         ctx.app.config.jwt.secret, // token 安全字符串
-                        { expiresIn: '3h' } // token 有效时间
+                        { expiresIn: ctx.app.config.tokenEffectiveTime } // token 有效时间
                     ),
                     userInfo: newUser[0]
                 };
