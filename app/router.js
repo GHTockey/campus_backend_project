@@ -1,5 +1,7 @@
 'use strict';
 
+const { strToArr } = require("./utils");
+
 // 【必要字段】
 // 添加轮播图
 let swiperNeedFields = ['title', 'image', 'cid'];
@@ -15,10 +17,39 @@ let commentsNeedFields = ['aid', 'name', 'avatar', 'content'];
 let jobNeedFields = ['uid', 'price', 'describe', 'tag', 'phone', 'title'];
 
 /**
+ * @param {Egg.Application} app 
+ */
+function updUserWeeklyBalance(app) {
+    var now = new Date(); // 当前时间
+    var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 0, 0); // 表示今天22点
+    // 计算两个Date对象之间的毫秒数差 得到当天距离当天22点之间的毫秒
+    var diff = end.getTime() - now.getTime();
+    // 定时器会在每天22点执行
+    setTimeout(async () => {
+        console.log('开始更新用户周余额阶段', new Date());
+        let uList = await app.mysql.select('user_wallet'); // [{id,money,...},...]
+        strToArr(uList);
+        uList.forEach(el => {
+            // 判断今天是否已更新 避免过了22点的时候一直修改数据
+            if (!(new Date(el.latest_upd_time).toDateString() == new Date().toDateString()) || el.latest_upd_time == null) {
+                el.weekly_balance.shift()
+                el.weekly_balance.push(el.money)
+                app.mysql.update('user_wallet', {
+                    weekly_balance: JSON.stringify(el.weekly_balance), // 最新数据
+                    latest_upd_time: new Date() // 修改时间
+                }, { where: { user_id: el.user_id } });
+            }
+        })
+    }, diff);
+
+}
+
+/**
  * @param {Egg.Application} app
  */
 module.exports = app => {
-    const { router, controller,middleware, io } = app; // egg 实例
+    updUserWeeklyBalance(app)
+    const { router, controller, middleware, io } = app; // egg 实例
     const { checkToken, checkFieldsTRAstr } = middleware; // 中间件
     // home 主页
     router.post('/api/home/swiper', checkFieldsTRAstr(swiperNeedFields), controller.home.addHomeSwiper); // 添加 home 轮播图

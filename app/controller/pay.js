@@ -132,25 +132,8 @@ module.exports = class Pay extends Controller {
         const { ctx } = this;
         try {
             let { user_id } = ctx.params;
-
-            let balances = await ctx.app.mysql.query('select * from user_wallet where user_id=?', [user_id]);
-            if (!balances.length) return ctx.body = { code: 400, message: "用户未实名或不存在" };
-            let nowDate = new Date(); // 当前时间
-            strToArr(balances)
-            let { latest_upd_time, weekly_balance, money } = balances[0];
-            // 判断是否过了当天 22 点 并且 最近更新数据时间不是今天
-            if (nowDate.getHours() >= 22 && new Date(latest_upd_time)?.getDate() + 1 != nowDate.getDate() + 1) {
-                weekly_balance.shift(); // 删除第一项
-                weekly_balance.push(money); // 将最新金额添加到末尾
-                // 将最新数据存储到数据库
-                await ctx.app.mysql.update('user_wallet', {
-                    weekly_balance: JSON.stringify(weekly_balance),
-                    latest_upd_time: nowDate // 修改时间
-                }, { where: { user_id } });
-            }
-
-
             let res = await ctx.app.mysql.select('user_wallet', { where: { user_id } });
+            if (!res.length) return ctx.body = { code: 400, message: "用户未实名或不存在" };
             ctx.body = { code: 200, message: "获取成功", balance: res[0] };
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error };
