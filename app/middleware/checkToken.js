@@ -5,6 +5,7 @@
  * @example checkToken() 仅仅检查 token 是否有效
  */
 module.exports = (control) => {
+    /**@param {Egg.Context} ctx */
     return async function checkToken(ctx, next) {
         try {
             // 从请求头获取 token authorization

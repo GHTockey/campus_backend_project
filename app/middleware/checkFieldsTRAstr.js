@@ -1,8 +1,9 @@
 /**
  * 校验字段参数并转换字符串 data:obj  field:str[]
- * @param {*} fields 必填字段
+ * @param {Array} fields 必填字段
  */
 module.exports = (fields) => {
+    /** @param {Egg.Context} ctx */
     return async function (ctx, next) {
         // 校验字段
         let data = fields?.indexOf('id') != -1 ? { ...ctx.request.body, id: ctx.params.id } : ctx.request.body;
