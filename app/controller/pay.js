@@ -134,6 +134,7 @@ module.exports = class Pay extends Controller {
             let { user_id } = ctx.params;
             let res = await ctx.app.mysql.select('user_wallet', { where: { user_id } });
             if (!res.length) return ctx.body = { code: 400, message: "用户未实名或不存在" };
+            strToArr(res);
             ctx.body = { code: 200, message: "获取成功", balance: res[0] };
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error };

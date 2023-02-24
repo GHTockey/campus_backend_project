@@ -1,7 +1,5 @@
 'use strict';
 
-const { strToArr, updUserWeeklyBalance } = require("./utils");
-
 // 【必要字段】
 // 添加轮播图
 let swiperNeedFields = ['title', 'image', 'cid'];
@@ -20,9 +18,8 @@ let jobNeedFields = ['uid', 'price', 'describe', 'tag', 'phone', 'title'];
  * @param {Egg.Application} app
  */
 module.exports = app => {
-    updUserWeeklyBalance(app); // 更新用户 weekly_balance 数据
-    const { router, controller, middleware, io } = app; // egg 实例
-    const { checkToken, checkFieldsTRAstr } = middleware; // 中间件
+    const { router, controller, io } = app; // egg 实例
+    const { checkToken, checkFieldsTRAstr } = app.middleware; // 中间件
     // home 主页
     router.post('/api/home/swiper', checkFieldsTRAstr(swiperNeedFields), controller.home.addHomeSwiper); // 添加 home 轮播图
     router.delete('/api/home/swiper/:id', controller.home.delHomeSwiper); // 删除 home 轮播图
