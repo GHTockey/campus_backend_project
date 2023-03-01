@@ -7,8 +7,9 @@ module.exports = {
         // * 代表整个时间段
         cron: '0 0 22 * * ?', // 每天22点执行
         type: 'all', // 指定所有的 worker 都需要执行
+        immediate: true,
     },
-    /**@param {Egg.Context} ctx */
+    /** @param {Egg.Context} ctx */
     async task(ctx) {
         // const { ctx } = this;
         try {
@@ -17,14 +18,21 @@ module.exports = {
             strToArr(uList);
             let ids = uList.map(el => el.user_id);
             let sql = '';
+            let ayerSql = '';
             uList.forEach(el => {
                 // 今日余额减去昨日余额 == 今天赚了多少钱
-                let newItem = +(el.money - el.weekly_balance[el.weekly_balance.length - 1]).toFixed(2) < 0 ? 0 : +(el.money - el.weekly_balance[el.weekly_balance.length - 1]).toFixed(2)
+                let newItem = +(el.money - el.ayer_balance).toFixed(2) < 0 ? 0 : +(el.money - el.ayer_balance).toFixed(2)
                 el.weekly_balance.push(newItem)
                 el.weekly_balance.shift()
                 sql += ` WHEN ${el.user_id} THEN '[${el.weekly_balance}]'`
+                ayerSql += ` WHEN ${el.user_id} THEN ${el.money}`
             });
-            ctx.app.mysql.query(`UPDATE user_wallet SET weekly_balance = CASE user_id ${sql} END WHERE user_id IN (${ids});`)
+            await ctx.app.mysql.query(`UPDATE user_wallet 
+                                    SET weekly_balance = CASE user_id ${sql} END,
+                                    latest_upd_time = NOW(),
+                                    ayer_balance = CASE user_id
+                                    ${ayerSql} END
+                                    WHERE user_id IN (${ids});`);
         } catch (error) {
             console.log("捕获到定时任务的错误：", error);
         };

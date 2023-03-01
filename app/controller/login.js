@@ -18,6 +18,9 @@ module.exports = class LoginController extends Controller {
                 // 校验密码
                 let checkPwd = await ctx.app.mysql.select('users', { where: { username, password: utils.md5(password) } });
                 if (!checkPwd.length) return ctx.body = { code: 400, message: '用户名或密码错误' };
+                // 是否在线 在线阻止登录
+                if(checkPwd[0].is_online != 0) return ctx.body = {code:400,message:'该账号已在线, 禁止登录'};
+
                 strToArr(userInfo);
                 ctx.body = {
                     code: 200,
@@ -66,6 +69,7 @@ module.exports = class LoginController extends Controller {
             // 校验管理员权限
             let checkAdmin = await ctx.app.mysql.select('users', { where: { username } });
             if (!checkAdmin.length) return ctx.body = { code: 400, message: '你的账号非管理员账号' };
+            console.log(checkAdmin);
 
             // 校验密码
             let checkPwdRes = await ctx.app.mysql.select('users', { where: { username, password: utils.md5(password) } });
