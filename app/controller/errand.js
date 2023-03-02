@@ -63,9 +63,9 @@ module.exports = class Errand extends Controller {
     async issueHandler() {
         const { ctx } = this;
         try {
-            let { oid, receive_id, state } = ctx.request.body;
-            if (state == 4) {
-                let executionRes = await ctx.app.mysql.query('UPDATE errand_orders SET state = 4 WHERE state != 4 AND state != 5 AND oid = ?',[oid]);
+            let { oid, state } = ctx.request.body;
+            if (state == 4) { // 取消订单
+                let executionRes = await ctx.app.mysql.query('UPDATE errand_orders SET state = 4 WHERE state != 4 AND state != 5 AND oid = ?', [oid]);
                 if (executionRes.affectedRows == 0) return ctx.body = { code: 400, message: '此订单已取消或已完成' };
                 // 资金退回发布者
                 let sql = `SELECT errand_orders.*,user_wallet.money
@@ -77,11 +77,15 @@ module.exports = class Errand extends Controller {
                 let { money, price, issue_id } = orderInfo[0];
                 await ctx.app.mysql.update('user_wallet', { money: money + price }, { where: { user_id: issue_id } });
                 ctx.body = { code: 200, message: '取消成功' };
-            } else if (state == 5) {
-                // Handler .................. // 开始转移资金 ...
+            } else if (state == 5) { // 完成订单
                 let executionRes = await ctx.app.mysql.update('errand_orders', { state, finish_time: new Date() }, { where: { state: 3, oid } });
                 if (executionRes.affectedRows == 0) return ctx.body = { code: 400, message: '此订单未进入送达状态' };
-                ctx.body = { code: 200, message: '确定送达成功' };
+                // 资金转移到接单者
+                let [{ price, receive_id }] = await ctx.app.mysql.select('errand_orders', { where: { oid } }); // 取到订单金额
+                let [{ money }] = await ctx.app.mysql.select('user_wallet', { where: { user_id: receive_id } }); // 取到接单者余额
+                // console.log(price, money);
+                await ctx.app.mysql.update('user_wallet', { money: money + price }, { where: { user_id: receive_id } }); // 更新接单者余额
+                ctx.body = { code: 200, message: '确定送达成功, 资金已进入对方账户' };
             }
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
