@@ -7,7 +7,6 @@ module.exports = {
         // * 代表整个时间段
         cron: '0 0 22 * * ?', // 每天22点执行
         type: 'all', // 指定所有的 worker 都需要执行
-        immediate: true,
     },
     /** @param {Egg.Context} ctx */
     async task(ctx) {
