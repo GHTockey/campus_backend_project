@@ -8,11 +8,27 @@ module.exports = class Errand extends Controller {
         const { ctx } = this;
         try {
             let { issue_id, price, remarks, from, to } = ctx.request.body;
-            let u = await ctx.app.mysql.select(`users`, { where: { id: issue_id } });
+            // 检查用户是否存在
+            let sql = `SELECT users.*,user_wallet.money
+            FROM users JOIN user_wallet
+            ON users.id = user_wallet.user_id
+            WHERE user_id = ?`;
+            let u = await ctx.app.mysql.query(sql, [issue_id]);
             if (!u.length) return ctx.body = { code: 400, message: '用户不存在' };
-            let oid = 'task' + getRandomDigits(6); // 生成随机单号
-            await ctx.app.mysql.insert('errand_orders', { issue_id, price, remarks, from, to, oid });
-            ctx.body = { code: 200, message: '跑单创建成功' };
+            // 检查用户是否实名
+            if (u[0].is_realname != 1) return ctx.body = { code: 400, message: '用户未实名' };
+            // 检查用户余额是否足够
+            if (price > u[0].money) return ctx.body = { code: 400, message: '发布失败, 用户余额不足' };
+            // 减金额
+            let executeRes = await ctx.app.mysql.update('user_wallet', { money: u[0].money - price }, {
+                where:{user_id: issue_id}
+            });
+            if(executeRes.affectedRows == 1) {
+                let oid = 'task' + getRandomDigits(6); // 生成随机单号
+                await ctx.app.mysql.insert('errand_orders', { issue_id, price, remarks, from, to, oid });
+                ctx.body = { code: 200, message: '跑单创建成功' };
+            }
+
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
