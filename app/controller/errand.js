@@ -21,9 +21,9 @@ module.exports = class Errand extends Controller {
             if (price > u[0].money) return ctx.body = { code: 400, message: '发布失败, 用户余额不足' };
             // 减金额
             let executeRes = await ctx.app.mysql.update('user_wallet', { money: u[0].money - price }, {
-                where:{user_id: issue_id}
+                where: { user_id: issue_id }
             });
-            if(executeRes.affectedRows == 1) {
+            if (executeRes.affectedRows == 1) {
                 let oid = 'task' + getRandomDigits(6); // 生成随机单号
                 await ctx.app.mysql.insert('errand_orders', { issue_id, price, remarks, from, to, oid });
                 ctx.body = { code: 200, message: '跑单创建成功' };
@@ -65,8 +65,17 @@ module.exports = class Errand extends Controller {
         try {
             let { oid, receive_id, state } = ctx.request.body;
             if (state == 4) {
-                let executionRes = await ctx.app.mysql.update('errand_orders', { state }, { where: { oid } });
+                let executionRes = await ctx.app.mysql.query('UPDATE errand_orders SET state = 4 WHERE state != 4 AND state != 5 AND oid = ?',[oid]);
                 if (executionRes.affectedRows == 0) return ctx.body = { code: 400, message: '此订单已取消或已完成' };
+                // 资金退回发布者
+                let sql = `SELECT errand_orders.*,user_wallet.money
+                FROM errand_orders
+                JOIN user_wallet
+                ON errand_orders.issue_id = user_wallet.user_id
+                WHERE errand_orders.oid = ?`;
+                let orderInfo = await ctx.app.mysql.query(sql, [oid]);
+                let { money, price, issue_id } = orderInfo[0];
+                await ctx.app.mysql.update('user_wallet', { money: money + price }, { where: { user_id: issue_id } });
                 ctx.body = { code: 200, message: '取消成功' };
             } else if (state == 5) {
                 // Handler .................. // 开始转移资金 ...
