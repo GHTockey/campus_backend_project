@@ -18,7 +18,7 @@ module.exports = class Errand extends Controller {
             // 检查用户是否实名
             if (u[0].is_realname != 1) return ctx.body = { code: 400, message: '用户未实名' };
             // 检查用户余额是否足够
-            if (price > u[0].money) return ctx.body = { code: 400, message: '发布失败, 用户余额不足' };
+            if (price > u[0].money) return ctx.body = { code: 400, message: '发布失败, 余额不足' };
             // 减金额
             let executeRes = await ctx.app.mysql.update('user_wallet', { money: u[0].money - price }, {
                 where: { user_id: issue_id }
@@ -81,10 +81,20 @@ module.exports = class Errand extends Controller {
                 let executionRes = await ctx.app.mysql.update('errand_orders', { state, finish_time: new Date() }, { where: { state: 3, oid } });
                 if (executionRes.affectedRows == 0) return ctx.body = { code: 400, message: '此订单未进入送达状态' };
                 // 资金转移到接单者
-                let [{ price, receive_id }] = await ctx.app.mysql.select('errand_orders', { where: { oid } }); // 取到订单金额
-                let [{ money }] = await ctx.app.mysql.select('user_wallet', { where: { user_id: receive_id } }); // 取到接单者余额
+                let [{ price, receive_id, issue_time, finish_time }] = await ctx.app.mysql.select('errand_orders', { where: { oid } }); // 取到订单金额
+                let [{ money, username }] = await ctx.app.mysql.select('user_wallet', { where: { user_id: receive_id } }); // 取到接单者余额
                 // console.log(price, money);
                 await ctx.app.mysql.update('user_wallet', { money: money + price }, { where: { user_id: receive_id } }); // 更新接单者余额
+                await ctx.app.mysql.insert('user_orders', {
+                    username,
+                    order_id: oid,
+                    price,
+                    really_price: price,
+                    state: 2,
+                    remarks: '跑腿收益',
+                    data: issue_time,
+                    pay_time: finish_time
+                });
                 ctx.body = { code: 200, message: '确定送达成功, 资金已进入对方账户' };
             }
         } catch (error) {
