@@ -24,7 +24,7 @@ module.exports = class Errand extends Controller {
                 where: { user_id: issue_id }
             });
             if (executeRes.affectedRows == 1) {
-                let oid = 'task' + getRandomDigits(6); // 生成随机单号
+                let oid = 'TASK' + getRandomDigits(6); // 生成随机单号
                 await ctx.app.mysql.insert('errand_orders', { issue_id, price, remarks, from, to, oid });
                 ctx.body = { code: 200, message: '跑单创建成功' };
             }
@@ -85,6 +85,7 @@ module.exports = class Errand extends Controller {
                 let [{ money, username }] = await ctx.app.mysql.select('user_wallet', { where: { user_id: receive_id } }); // 取到接单者余额
                 // console.log(price, money);
                 await ctx.app.mysql.update('user_wallet', { money: money + price }, { where: { user_id: receive_id } }); // 更新接单者余额
+                // 同时记录到 user_orders 中
                 await ctx.app.mysql.insert('user_orders', {
                     username,
                     order_id: oid,
@@ -92,7 +93,7 @@ module.exports = class Errand extends Controller {
                     really_price: price,
                     state: 2,
                     remarks: '跑腿收益',
-                    data: issue_time,
+                    date: issue_time,
                     pay_time: finish_time
                 });
                 ctx.body = { code: 200, message: '确定送达成功, 资金已进入对方账户' };

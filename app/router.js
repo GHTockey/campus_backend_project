@@ -96,14 +96,25 @@ module.exports = app => {
     router.delete('/api/job/:id', controller.job.delJob); // 删除兼职
     router.get('/api/job/list', controller.job.getJobList); // 获取兼职列表
     router.get('/api/job/my/:uid', controller.job.getMySendJobs); // 获取我发布的兼职列表
+    // 提现
+    router.post('/api/withdrawal/application', // 新增提箱申请
+        checkFieldsTRAstr(['uid', 'withdrawal_money', 'phone', 'wx_name']),
+        controller.withdrawal.addWithdrawalApplication);
+    router.post('/api/withdrawal/handling', // 处理提现申请 
+        checkToken('admin'),
+        checkFieldsTRAstr(['oid', 'remark', 'state']),
+        controller.withdrawal.handlingWithdrawalApplication
+    );
+    router.get('/api/withdrawal/list/:state', controller.withdrawal.getWithdrawalList); // 待审申请列表
+    router.get('/api/withdrawal/user/list/:uid',controller.withdrawal.getUserApplicationList); // 获取用户的申请列表
 
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
     io.of('/').route('sendMsg', io.controller.user.sendMsg); // 发送私聊消息
     io.of('/').route('triggerMsgSend', io.controller.user.sendMsg); // 客户端触发消息返回
 };
-/*
 
+/*
 const { ctx } = this;
 try {
 
@@ -113,14 +124,12 @@ try {
 
 ctx.body = { code: 400, message: '参数缺失' };
 
-*/
 
-/*
-        const { ctx } = this;
-        try {
-            let data = ctx.args[0]; // 客户端发过来的数据
-        } catch (error) {
-            await ctx.socket.emit('err', { code: 400, message: "捕获到 socket.io 错误：" + error })
-        };
+const { ctx } = this;
+try {
+    let data = ctx.args[0]; // 客户端发过来的数据
+} catch (error) {
+    await ctx.socket.emit('err', { code: 400, message: "捕获到 socket.io 错误：" + error })
+};
 */
 
