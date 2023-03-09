@@ -8,7 +8,7 @@ module.exports = class Withdrawal extends Controller {
         const { ctx } = this;
         try {
             let { uid, withdrawal_money, phone, wx_name } = ctx.request.body;
-            console.log(uid, withdrawal_money, phone, wx_name);
+            // console.log(uid, withdrawal_money, phone, wx_name);
             // 检查用户是否存在
             let sql = `SELECT users.*,user_wallet.money
                         FROM users JOIN user_wallet
@@ -37,7 +37,19 @@ module.exports = class Withdrawal extends Controller {
     async handlingWithdrawalApplication() {
         const { ctx } = this;
         try {
+            let { remark, oid, state } = ctx.request.body;
+            let executeRes = await ctx.app.mysql.update('user_withdrawal', {
+                remark, state,
+                handling_time: new Date()
+            }, {
+                where: { oid }
+            })
+            if (executeRes.affectedRows == 1) {
+                ctx.body = { code: 200, message: `${state == 2 ? '已拒绝' : '已通过'}该申请` }
+            }
 
+
+            // ctx.body = 'ok'
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
@@ -50,11 +62,14 @@ module.exports = class Withdrawal extends Controller {
             var res;
             if (!state) return ctx.body = { code: 400, message: '参数缺失: state' };
             if (+state == 0) { // 待审列表
-                res = await ctx.app.mysql.select('user_withdrawal', {
-                    where: { state: 0 }
-                });
+                let sql = `select users.name, user_withdrawal.* from users
+                            join user_withdrawal on users.id = user_withdrawal.uid
+                            where user_withdrawal.state = 0`;
+                res = await ctx.app.mysql.query(sql);
             } else if (+state != 0) { // 获取已处理的申请列表
-                let sql = `select * from user_withdrawal where state != 0`;
+                let sql = `select users.name, user_withdrawal.* from users
+                join user_withdrawal on users.id = user_withdrawal.uid
+                where user_withdrawal.state != 0`;
                 res = await ctx.app.mysql.query(sql);
             }
             ctx.body = { code: 200, message: '获取成功', data: res || [] }
