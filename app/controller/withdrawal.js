@@ -92,5 +92,25 @@ module.exports = class Withdrawal extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
-
+    // 设置提现额度
+    async setWithdrawalLimit() {
+        const { ctx } = this;
+        try {
+            let { limit_max, limit_min } = ctx.request.body;
+            // console.log(limit_max, limit_min);
+            if (typeof limit_max === 'number' && typeof limit_min === 'number') {
+                let executeRes = await ctx.app.mysql.update('sundry', {
+                    withdrawal_limit_min: limit_min,
+                    withdrawal_limit_max: limit_max,
+                }, { where: { id: 1 } });
+                if (executeRes.affectedRows == 1) {
+                    ctx.body = { code: 200, message: '设置成功' }
+                }
+            } else {
+                ctx.body = { code: 400, message: 'limit 不是 number 类型' }
+            }
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    }
 };
