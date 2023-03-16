@@ -20,6 +20,10 @@ module.exports = class Withdrawal extends Controller {
             if (u[0].is_realname != 1) return ctx.body = { code: 400, message: '用户未实名' };
             // 检查用户余额是否足够
             if (withdrawal_money > u[0].money) return ctx.body = { code: 400, message: '发布失败, 余额不足' };
+            // 检查是否满足额度
+            let [{ withdrawal_limit_max, withdrawal_limit_min }] = await ctx.app.mysql.query("SELECT sundry.withdrawal_limit_max,sundry.withdrawal_limit_min FROM `sundry`");
+            if (withdrawal_money > withdrawal_limit_max) return ctx.body = { code: 400, message: '超出最大提现额度! 单次最多可提现: ' + withdrawal_limit_max };
+            if (withdrawal_money < withdrawal_limit_min) return ctx.body = { code: 400, message: '小于最小提现额度! 单次最少提现: ' + withdrawal_limit_min };
             // 减金额
             let executeRes = await ctx.app.mysql.update('user_wallet', { money: u[0].money - withdrawal_money }, {
                 where: { user_id: uid }
@@ -109,6 +113,16 @@ module.exports = class Withdrawal extends Controller {
             } else {
                 ctx.body = { code: 400, message: 'limit 不是 number 类型' }
             }
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
+    // 获取提现额度
+    async getWithdrawalLimit() {
+        const { ctx } = this;
+        try {
+            let [sundry] = await ctx.app.mysql.query("SELECT sundry.withdrawal_limit_max,sundry.withdrawal_limit_min FROM `sundry`");
+            console.log(sundry);
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };

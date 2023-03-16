@@ -108,6 +108,7 @@ module.exports = app => {
     router.get('/api/withdrawal/list/:state', controller.withdrawal.getWithdrawalList); // 待审申请列表
     router.get('/api/withdrawal/user/list/:uid',controller.withdrawal.getUserApplicationList); // 获取用户的申请列表
     router.patch('/api/withdrawal/limit',checkFieldsTRAstr(['limit_max','limit_min']),controller.withdrawal.setWithdrawalLimit); // 设置提现额度
+    router.get('/api/withdrawal/limit',controller.withdrawal.getWithdrawalLimit); // 获取提现额度
 
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
