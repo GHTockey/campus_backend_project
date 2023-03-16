@@ -127,5 +127,5 @@ module.exports = class Withdrawal extends Controller {
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
-    }
+    };
 };

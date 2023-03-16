@@ -13,6 +13,7 @@ const sendToWormhole = require("stream-wormhole");
 //     SecretKey: 'ta9XnpcBZnpfLtHSRDoDPRGrHXZMuEJA'
 // });
 const { strToArr } = require('../utils');
+const dayjs = require('dayjs');
 
 module.exports = class OtherController extends Controller {
     // 模糊搜索文章
@@ -231,4 +232,25 @@ module.exports = class OtherController extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
+
+    async getNewUser() {
+        const { ctx } = this;
+        try {
+            let users = await ctx.app.mysql.select('users')
+            let thatDay = new Date().getDate() // 当前日
+            let newUsers = [];
+            users.forEach(el => {
+                // console.log(
+                //     (thatDay - dayjs(el.registration_time).date()), // 注册时间距离当前时间的小时数
+                // );
+                if ((thatDay - dayjs(el.registration_time).date()) <= 1) {
+                    newUsers.push(el)
+                }
+            });
+            strToArr(newUsers);
+            ctx.body = { code: 200, data: newUsers };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    }
 };
