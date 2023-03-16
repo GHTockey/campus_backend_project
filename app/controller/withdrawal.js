@@ -122,7 +122,8 @@ module.exports = class Withdrawal extends Controller {
         const { ctx } = this;
         try {
             let [sundry] = await ctx.app.mysql.query("SELECT sundry.withdrawal_limit_max,sundry.withdrawal_limit_min FROM `sundry`");
-            console.log(sundry);
+            // console.log(sundry);
+            ctx.body = { code: 200, data: sundry }
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
