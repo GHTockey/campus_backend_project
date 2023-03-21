@@ -1,6 +1,6 @@
 'use strict';
 const { Controller } = require('egg');
-const { getRandomDigits } = require('../utils');
+const { getRandomDigits, isToday, strToArr } = require('../utils');
 
 module.exports = class Withdrawal extends Controller {
     // 新增提现申请
@@ -124,6 +124,31 @@ module.exports = class Withdrawal extends Controller {
             let [sundry] = await ctx.app.mysql.query("SELECT sundry.withdrawal_limit_max,sundry.withdrawal_limit_min FROM `sundry`");
             // console.log(sundry);
             ctx.body = { code: 200, data: sundry }
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
+    // 获取额外的信息
+    async getWithdrawalExtraData() {
+        const { ctx } = this;
+        try {
+            //  累计提现申请  累计提现金额
+            let cumulativeReqNum = 0, cumulativeAmount = 0;
+            let withdrawalList = await ctx.app.mysql.select('user_withdrawal');
+            withdrawalList.forEach(el => {
+                cumulativeReqNum++
+                cumulativeAmount += el.withdrawal_money
+            });
+            let sql = `select sundry.withdrawal_additional_data from sundry`;
+            let list = await ctx.app.mysql.query(sql);
+            strToArr(list);
+            ctx.body = {
+                code: 200, data: {
+                    cumulativeReqNum,
+                    cumulativeAmount,
+                    list: list[0].withdrawal_additional_data
+                }
+            }
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };

@@ -2,6 +2,7 @@
 const await = require('await-stream-ready/lib/await');
 const { Controller } = require('egg');
 const utils = require('utility');
+const dayjs = require('dayjs');
 const { strToArr, checkFields, sendOnlineUser } = require('../utils');
 module.exports = class UserController extends Controller {
     // 获取全部用户信息
@@ -158,9 +159,31 @@ module.exports = class UserController extends Controller {
             let res = await ctx.app.mysql.query(`select users.username from users`); // [{uname},...]
             let newRes = [];
             res.forEach(el => newRes.push(el.username));
-            ctx.body = {code: 200, data: newRes};
+            ctx.body = { code: 200, data: newRes };
         } catch (error) {
-            ctx.body = { code: 400, message: "捕获到错误：" + error } 
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
     };
+
+    // 获取新用户
+    async getNewUser() {
+        const { ctx } = this;
+        try {
+            let users = await ctx.app.mysql.select('users')
+            let thatDay = new Date().getDate() // 当前日
+            let newUsers = [];
+            users.forEach(el => {
+                // console.log(
+                //     (thatDay - dayjs(el.registration_time).date()), // 注册时间距离当前时间的小时数
+                // );
+                if ((thatDay - dayjs(el.registration_time).date()) <= 1) {
+                    newUsers.push(el)
+                }
+            });
+            strToArr(newUsers);
+            ctx.body = { code: 200, data: newUsers };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    }
 };
