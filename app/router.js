@@ -64,7 +64,7 @@ module.exports = app => {
     // users 用户
     router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息
     router.get('/api/user/:id', controller.user.getUserInfo); // 获取用户信息
-    router.get('/api/new/user',controller.user.getNewUser); // 获取新用户列表
+    router.get('/api/new/user', controller.user.getNewUser); // 获取新用户列表
     router.post('/api/user/pwd/:id', controller.user.updUserPwd); // 修改用户密码
     router.post('/api/user/info/:id', checkFieldsTRAstr(), controller.user.updUserInfo); // 修改用户信息
     router.post('/api/user/:id', checkFieldsTRAstr(), controller.user.updUserData); // 修改用户数据
@@ -97,6 +97,11 @@ module.exports = app => {
     router.delete('/api/job/:id', controller.job.delJob); // 删除兼职
     router.get('/api/job/list', controller.job.getJobList); // 获取兼职列表
     router.get('/api/job/my/:uid', controller.job.getMySendJobs); // 获取我发布的兼职列表
+    // 校园维权中心
+    router.post('/api/maintain', controller.maintain.add);
+    router.delete('/api/maintain/:id', controller.maintain.del);
+    router.get('/api/maintain/:id', controller.maintain.get);
+    router.get('/api/maintain/', controller.maintain.all);
     // 提现
     router.post('/api/withdrawal/application', // 新增提箱申请
         checkFieldsTRAstr(['uid', 'withdrawal_money', 'phone', 'wx_name']),
@@ -107,10 +112,10 @@ module.exports = app => {
         controller.withdrawal.handlingWithdrawalApplication
     );
     router.get('/api/withdrawal/list/:state', controller.withdrawal.getWithdrawalList); // 待审申请列表
-    router.get('/api/withdrawal/user/list/:uid',controller.withdrawal.getUserApplicationList); // 获取用户的申请列表
-    router.patch('/api/withdrawal/limit',checkFieldsTRAstr(['limit_max','limit_min']),controller.withdrawal.setWithdrawalLimit); // 设置提现额度
-    router.get('/api/withdrawal/limit',controller.withdrawal.getWithdrawalLimit); // 获取提现额度
-    router.get('/api/withdrawal/extra/data',controller.withdrawal.getWithdrawalExtraData);// 获取额外的提现数据
+    router.get('/api/withdrawal/user/list/:uid', controller.withdrawal.getUserApplicationList); // 获取用户的申请列表
+    router.patch('/api/withdrawal/limit', checkFieldsTRAstr(['limit_max', 'limit_min']), controller.withdrawal.setWithdrawalLimit); // 设置提现额度
+    router.get('/api/withdrawal/limit', controller.withdrawal.getWithdrawalLimit); // 获取提现额度
+    router.get('/api/withdrawal/extra/data', controller.withdrawal.getWithdrawalExtraData);// 获取额外的提现数据
 
     // socket.io serve 
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
