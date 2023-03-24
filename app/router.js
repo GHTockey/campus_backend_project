@@ -100,6 +100,7 @@ module.exports = app => {
     // 校园维权中心
     router.post('/api/maintain', controller.maintain.add);
     router.delete('/api/maintain/:id', controller.maintain.del);
+    router.put('/api/maintain/:id', controller.maintain.state);
     router.get('/api/maintain/:id', controller.maintain.get);
     router.get('/api/maintain/', controller.maintain.all);
     // 提现

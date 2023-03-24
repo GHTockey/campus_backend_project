@@ -44,6 +44,33 @@ class MaintainController extends Controller {
     };
   }
 
+  // 更新
+  async state() {
+    const { app, ctx } = this
+
+    try {
+      const res = await app.mysql.update("maintain", { id: ctx.params.id, state: ctx.query.state })
+      console.log(res);
+
+      if (res.affectedRows !== 1) {
+        return ctx.body = {
+          code: 400,
+          message: "更新状态失败"
+        }
+      }
+
+      ctx.body = {
+        code: 200,
+        message: "更新状态成功"
+      }
+    } catch (error) {
+      ctx.body = {
+        code: 400,
+        message: "捕获到错误：" + error
+      }
+    }
+  }
+
   // 获取
   async get() {
     const { app, ctx } = this;
