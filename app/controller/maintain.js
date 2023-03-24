@@ -14,13 +14,13 @@ class MaintainController extends Controller {
 
     if (res.affectedRows === 0) {
       return (ctx.body = {
-        status: 400,
+        code: 400,
         message: "新增维权失败",
       });
     }
 
     ctx.body = {
-      status: 200,
+      code: 200,
       message: "新增维权成功",
     };
   }
@@ -33,13 +33,13 @@ class MaintainController extends Controller {
 
     if (res.affectedRows === 0) {
       return (ctx.body = {
-        status: 400,
+        code: 400,
         message: "删除维权失败",
       });
     }
 
     ctx.body = {
-      status: 200,
+      code: 200,
       message: "删除维权成功",
     };
   }
@@ -78,7 +78,7 @@ class MaintainController extends Controller {
     const res = await app.mysql.get("maintain", { id: ctx.params.id });
 
     ctx.body = {
-      status: 200,
+      code: 200,
       message: "获取数据成功",
       data: res,
     };
@@ -91,7 +91,7 @@ class MaintainController extends Controller {
     const res = await app.mysql.select("maintain");
 
     ctx.body = {
-      status: 200,
+      code: 200,
       message: "获取数据成功",
       data: res || [],
     };
