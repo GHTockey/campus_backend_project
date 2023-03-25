@@ -49,7 +49,7 @@ class MaintainController extends Controller {
     const { app, ctx } = this
 
     try {
-      const res = await app.mysql.update("maintain", { id: ctx.params.id, state: ctx.query.state })
+      const res = await app.mysql.update("maintain", { id: ctx.params.id, state: ctx.request.body.state })
       console.log(res);
 
       if (res.affectedRows !== 1) {
