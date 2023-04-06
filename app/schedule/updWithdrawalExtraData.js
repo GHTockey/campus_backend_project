@@ -1,4 +1,4 @@
-const { strToArr } = require("../utils");
+const { strToArr, isToday } = require("../utils");
 
 module.exports = {
     schedule: {
@@ -7,6 +7,7 @@ module.exports = {
         // * 代表整个时间段
         cron: '0 0 0 * * ?', // 每天0点执行
         type: 'all', // 指定所有的 worker 都需要执行
+        // immediate: true, // 项目启动立即执行
     },
     /** @param {Egg.Context} ctx */
     async task(ctx) {
