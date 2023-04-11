@@ -85,7 +85,6 @@ module.exports = class OtherController extends Controller {
         try {
             try {
                 fileStream = await ctx.getFileStream();
-                // console.log(fileStream);
             } catch (err) {
                 return ctx.body = { code: 400, message: '没有传入文件或者不支持的文件格式' };
 
@@ -227,6 +226,56 @@ module.exports = class OtherController extends Controller {
             // let chatList = await ctx.app.mysql.select('user_msg_record', { where: { sender_id, receiver_id } });
             let chatList = await ctx.app.mysql.query(`SELECT * FROM user_msg_record WHERE (sender_id=? and receiver_id=?) OR (sender_id=? AND receiver_id=?)`, [sender_id, receiver_id, receiver_id, sender_id]);
             ctx.body = { code: 200, message: '获取成功', chatList };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
+
+    // 获取收款代码(后台)
+    async getPayCodes() {
+        const { ctx } = this;
+        try {
+            let codes = await ctx.app.mysql.select('pay_codes');
+            ctx.body = { code: 200, message: '获取成功', data: codes }
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error }
+        };
+    };
+    // 修改收款码(后台)
+    async updPayeeCodes() {
+        const { ctx } = this;
+        try {
+            // 原数据 [{stage:'ten'}, ...]
+            let data = await ctx.app.mysql.select('pay_codes');
+            // console.log(data);
+            // 新数据
+            let newData = ctx.request.body;
+            // let { ten, thirty, fifty } = ctx.request.body;
+            // console.log(ten, thirty, fifty);
+            // console.log(newData);
+            for (const key in newData) {
+                // 仅限指定字段
+                if (key === 'ten' || key === 'thirty' || key === 'fifty') {
+                    for (let i = 0; i < newData[key].length; i++) {
+                        let el = newData[key][i];
+                        // 排除 null
+                        if (!el) continue;
+                        // 是否是新数据
+                        let isNew = data.find(item => item.really_price == el.really_price);
+                        if (isNew) {
+                            // 修改原有数据
+                            ctx.app.mysql.update('pay_codes', { really_price: el.really_price, payee_code: el.code },
+                                { where: { really_price: el.really_price } });
+                        } else {
+                            // 插入新数据
+                            let sql = `INSERT INTO pay_codes (stage, really_price, payee_code, state, expiration_time, date, order_id) 
+                            VALUES ('${key}', ${el.really_price}, '${el.code}', 0, NULL, NULL, NULL);`;
+                            ctx.app.mysql.query(sql);
+                        };
+                    };
+                };
+            };
+            ctx.body = { code: 200, message: '修改成功' }
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };

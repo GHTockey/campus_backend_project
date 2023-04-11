@@ -8,7 +8,7 @@ class MaintainController extends Controller {
     const { app, ctx } = this;
 
     const { info, type } = ctx.request.body;
-    console.log(info, type);
+    // console.log(info, type);
 
     const res = await app.mysql.insert("maintain", { info, type });
 
@@ -50,7 +50,7 @@ class MaintainController extends Controller {
 
     try {
       const res = await app.mysql.update("maintain", { id: ctx.params.id, state: ctx.request.body.state })
-      console.log(res);
+      // console.log(res);
 
       if (res.affectedRows !== 1) {
         return ctx.body = {

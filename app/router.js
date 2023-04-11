@@ -61,6 +61,8 @@ module.exports = app => {
     router.post('/api/upload', controller.other.fileUpdCos); // 文件上传
     router.get('/api/article/topping', controller.other.getToppingArticle); // 获取置顶文章
     router.post('/api/chatlist', checkFieldsTRAstr(['sender_id', 'receiver_id']), controller.other.getChatList); // 获取历史聊天数据
+    router.get('/api/get/pay/codes', controller.other.getPayCodes); // 获取收款代码
+    router.post('/api/payee/code/upd',controller.other.updPayeeCodes); // 修改收款码
     // users 用户
     router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息
     router.get('/api/user/:id', controller.user.getUserInfo); // 获取用户信息
