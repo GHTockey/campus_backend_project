@@ -97,8 +97,9 @@ module.exports = class Pay extends Controller {
         try {
             let { money, time, type, title, deviceid, content } = ctx.request.body;
             money = money == 'null' ? content.match(/(\d+\.\d+|\d+)(?=元)/)[1] : money;
-            // console.log(money);
-            if(Number(money) > 1) money = Number(money) + 20
+            // console.log(money, 1);
+            if (Number(money) < 1) money = Number(money) + 20
+            // console.log(money, 2);
             // console.log(content.match(/(\d+\.\d+|\d+)(?=元)/)[1]);
             // 根据金额浮点数筛选出充值的用户
             let person = await ctx.app.mysql.select('user_orders', { where: { really_price: money, state: 1 } });
