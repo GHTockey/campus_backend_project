@@ -28,6 +28,20 @@ let sendOnlineUser = async (ctx) => {
 };
 
 /**
+ * 收款码发生变化通知中控台
+ * @param {Egg.BaseContextClass} ctx
+ */
+async function payCodeChangeHandler(ctx) {
+    // console.log(ctx.app.io.to);
+    let admins = await ctx.app.mysql.query(`select users.socket_id from users where is_online=1 and is_admin=1`);
+    admins.forEach(el => {
+        // console.log(el.socket_id);
+        // 通知在线管理员
+        ctx.app.io.to(el.socket_id).emit('payCodeChange')
+    })
+}
+
+/**
  * 定义一个函数来生成指定长度的随机数
  * @param {number} length 
  * @returns {string}
@@ -59,5 +73,6 @@ module.exports = {
     strToArr,
     sendOnlineUser,
     getRandomDigits,
-    isToday
+    isToday,
+    payCodeChangeHandler
 };

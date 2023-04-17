@@ -14,9 +14,8 @@ module.exports = (app) => {
 
 
 
-    // 断开连接时会主动执行下方代码
+    // === 断开连接时会主动执行下方代码 ===
     // 将断开的用户改为离线状态并清除 sid
-    console.log('离线');
     let offlineUser = await ctx.app.mysql.query(`SELECT name from users where socket_id=?`, ctx.socket.id);
     await ctx.app.mysql.update('users', { socket_id: null, is_online: 0 }, { where: { socket_id: ctx.socket.id } });
     // console.log(ctx.socket.id, '已断开');

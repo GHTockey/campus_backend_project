@@ -62,7 +62,7 @@ module.exports = app => {
     router.get('/api/article/topping', controller.other.getToppingArticle); // 获取置顶文章
     router.post('/api/chatlist', checkFieldsTRAstr(['sender_id', 'receiver_id']), controller.other.getChatList); // 获取历史聊天数据
     router.get('/api/get/pay/codes', controller.other.getPayCodes); // 获取收款代码
-    router.post('/api/payee/code/upd',controller.other.updPayeeCodes); // 修改收款码
+    router.post('/api/payee/code/upd', controller.other.updPayeeCodes); // 修改收款码
     // users 用户
     router.get('/api/user', controller.user.getUserInfoList); // 获取所有的用户信息
     router.get('/api/user/:id', controller.user.getUserInfo); // 获取用户信息
@@ -124,6 +124,8 @@ module.exports = app => {
     io.of('/').route('updUserOnlineState', io.controller.user.updUserSid); // 更新用户在线状态
     io.of('/').route('sendMsg', io.controller.user.sendMsg); // 发送私聊消息
     io.of('/').route('triggerMsgSend', io.controller.user.sendMsg); // 客户端触发消息返回
+    io.of('/').route('adminOnline', io.controller.admin.adminOnlineHandler); // 中控端管理员上线
+
 };
 
 /*

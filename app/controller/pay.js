@@ -1,6 +1,6 @@
 'use strict';
 const { Controller } = require('egg');
-const { strToArr } = require('../utils');
+const { strToArr, payCodeChangeHandler } = require('../utils');
 
 module.exports = class Pay extends Controller {
     // 创建订单
@@ -24,7 +24,7 @@ module.exports = class Pay extends Controller {
 
             // 校验订单通道是否有空余
             let checkOrder = await ctx.app.mysql.select('pay_codes', { where: { stage: stage, state: 0 } });
-            if (checkOrder.length == 0) return ctx.body = { code: 400, message: '当前金额充值通道已满, 请稍后再试' };
+            if (checkOrder.length == 0) return ctx.body = { code: 400, message: '当前金额没有可用的通道' };
 
             // 分配充值通道
             let passages = await ctx.app.mysql.select('pay_codes', { where: { stage: stage, state: 0 } });
@@ -35,6 +35,9 @@ module.exports = class Pay extends Controller {
             await ctx.app.mysql.update('pay_codes', { state: 1, expiration_time, date: new Date(time), order_id }, {
                 where: { stage: passages[0].stage, really_price: passages[0].really_price }
             });
+
+            // 通知中控端
+            payCodeChangeHandler(ctx);
 
             let uOrder = {
                 order_id, // 订单号
@@ -56,7 +59,6 @@ module.exports = class Pay extends Controller {
                 message: "创建订单成功",
                 order: { ...order[0], payee_code: passages[0].payee_code }
             };
-
         } catch (error) {
             ctx.body = { code: 400, message: "捕获到错误：" + error }
         };
@@ -111,11 +113,13 @@ module.exports = class Pay extends Controller {
             await ctx.app.mysql.update('user_orders', { state: 2, remarks, pay_time }, { where: { really_price: money, state: 1 } });
             // 释放支付通道
             await ctx.app.mysql.update('pay_codes', { state: 0, expiration_time: null, date: null, order_id: null }, { where: { really_price, state: 1, order_id } });
+            // 通知中控端
+            payCodeChangeHandler(ctx);
             // 余额增加
             let yue = await ctx.app.mysql.select('user_wallet', { where: { username } });
             await ctx.app.mysql.update('user_wallet', { money: yue[0].money + money }, { where: { username } });
 
-            // console.log(`${pay_time} 用户 ${person.username} 充值 ${person.really_price} 成功 `);
+            console.log(`${pay_time} 用户 ${person.username} 充值 ${person.really_price} 成功 `);
             ctx.body = { code: 200, message: '充值完成' };
 
             // 主动发送 socket 响应到客户端
