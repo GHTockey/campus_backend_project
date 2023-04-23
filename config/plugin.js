@@ -28,6 +28,11 @@ module.exports = {
     enable: true,
     package: 'egg-socket.io'
   },
+  // 七牛云
+  fullQiniu: {
+    enable: true,
+    package: 'egg-full-qiniu-plus'
+  },
 
   tencentCloudCos: {
     enable: true,

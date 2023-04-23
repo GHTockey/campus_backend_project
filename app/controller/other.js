@@ -119,6 +119,33 @@ module.exports = class OtherController extends Controller {
             ctx.body = { code: 400, message: "捕获到错误：" + error };
         };
     };
+    // 文件上传 (七牛云)
+    async fileUpdQiniu() {
+        const { ctx } = this;
+        let fileStream;
+        try {
+            try {
+                fileStream = await ctx.getFileStream();
+            } catch (err) {
+                return ctx.body = { code: 400, message: '没有传入文件或者不支持的文件格式' };
+
+            };
+            let { type } = fileStream.fields;
+            type = type ? type : 'other';
+
+            let res = await ctx.app.fullQiniu.uploadStream(`campus/${type}/${fileStream.filename}`, fileStream);
+            ctx.body = {
+                message: '上传成功',
+                code: 200,
+                data: {
+                    filename: fileStream.filename,
+                    url: res.url
+                }
+            };
+        } catch (error) {
+            ctx.body = { code: 400, message: "捕获到错误：" + error };
+        };
+    };
 
     // 获取置顶文章
     async getToppingArticle() {
